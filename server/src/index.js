@@ -1,0 +1,60 @@
+require('dotenv').config();
+const express = require('express');
+const cors = require('cors');
+const morgan = require('morgan');
+const path = require('path');
+const fs = require('fs');
+const sequelize = require('./config/database');
+
+// Import routes
+const authRoutes = require('./routes/auth.routes');
+const drawRoutes = require('./routes/draw.routes');
+const ticketRoutes = require('./routes/ticket.routes');
+const profileRoutes = require('./routes/profile.routes');
+const adminRoutes = require('./routes/admin.routes');
+
+const app = express();
+
+// Middleware
+app.use(cors());
+app.use(express.json());
+app.use(morgan('dev'));
+
+// Serve uploaded files
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+
+// Ensure uploads directory exists
+const uploadsDir = path.join(__dirname, '../uploads');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
+
+// Routes
+app.use('/api/auth', authRoutes);
+app.use('/api', ticketRoutes); 
+app.use('/api', profileRoutes);
+app.use('/api/draws', drawRoutes);
+app.use('/api/admin', adminRoutes);
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({
+    status: 'error',
+    message: 'Something went wrong!',
+  });
+});
+
+const PORT = process.env.PORT || 3000;
+
+// Sync database and start server
+sequelize
+  .sync({ alter: process.env.NODE_ENV === 'development' })
+  .then(() => {
+    app.listen(PORT, () => {
+      console.log(`Server is running on port ${PORT}`);
+    });
+  })
+  .catch((error) => {
+    console.error('Unable to connect to the database:', error);
+  });
