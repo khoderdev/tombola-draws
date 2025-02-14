@@ -1,5 +1,6 @@
 const { User, Draw, Ticket } = require("../models");
 const { Op } = require("sequelize");
+const sequelize = require("../config/database");
 const bcrypt = require("bcryptjs");
 const { uploadToCloudinary } = require("../utils/cloudinary");
 
@@ -181,16 +182,31 @@ exports.getStats = async (req, res) => {
       where: { userId, status: "won" },
     });
 
-    // Get total spent
-    const totalSpent = await Ticket.sum("price", {
+    // Get total spent by summing up draw prices
+    const totalSpent = await Ticket.findAll({
+      attributes: [
+        [sequelize.fn('COUNT', sequelize.col('Ticket.id')), 'ticketCount'],
+        [sequelize.col('Draw.price'), 'drawPrice']
+      ],
       where: { userId },
-    });
+      include: [{ 
+        model: Draw,
+        as: 'Draw',
+        attributes: []
+      }],
+      group: ['Draw.price'],
+      raw: true
+    }).then(results => 
+      results.reduce((sum, row) => 
+        sum + (parseFloat(row.drawPrice) * parseInt(row.ticketCount)), 0)
+    );
 
     // Get upcoming draws with tickets
     const upcomingDraws = await Draw.findAll({
       include: [
         {
           model: Ticket,
+          as: 'tickets',
           where: { userId, status: "active" },
           required: true,
         },
