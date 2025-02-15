@@ -42,26 +42,26 @@ export default function MyTickets() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <h2 className="text-3xl font-bold text-gray-900 mb-8">My Tickets</h2>
+    <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <h2 className="text-3xl font-bold  mb-8">My Tickets</h2>
       
       {tickets.length === 0 ? (
-        <div className="text-center text-gray-500">
-          You haven't entered any draws yet.
+        <div className="text-center text-neutral-300">
+          You haven&apos;t entered any draws yet.
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-6">
           {tickets.map((ticket) => (
             <div
               key={ticket.id}
-              className="bg-white rounded-lg shadow p-6 flex items-center justify-between"
+              className="bg-white dark:bg-neutral-700 rounded-lg shadow p-6 flex items-center justify-between"
             >
               <div>
-                <h3 className="text-lg font-semibold text-gray-900">
+                <h3 className="text-2xl font-semibold dark:text-white">
                   {ticket.Draw?.title || 'Unknown Draw'}
                 </h3>
-                <p className="text-gray-600">Ticket #{ticket.number}</p>
-                <p className="text-gray-500 text-sm">
+                <p className="text-neutral-700 dark:text-neutral-400">Ticket #{ticket.number}</p>
+                <p className="text-neutral-700 dark:text-neutral-400 text-sm">
                   Purchased: {new Date(ticket.purchaseDate).toLocaleDateString()}
                 </p>
                 <span
@@ -77,10 +77,10 @@ export default function MyTickets() {
                 </span>
               </div>
               <div className="text-right">
-                <p className="text-lg font-semibold text-indigo-600">
+                <p className="text-2xl font-semibold text-blue-500">
                   Prize: {ticket.Draw?.prize || 'N/A'}
                 </p>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-neutral-300">
                   Draw Date: {ticket.Draw?.endDate ? new Date(ticket.Draw.endDate).toLocaleDateString() : 'N/A'}
                 </p>
               </div>

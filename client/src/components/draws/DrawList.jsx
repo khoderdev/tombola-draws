@@ -68,7 +68,7 @@ export default function DrawList() {
   if (!draws.length) {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="text-center text-gray-500">
+        <div className="text-center text-neutral-500">
           No draws available at the moment.
         </div>
       </div>
@@ -78,11 +78,11 @@ export default function DrawList() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="flex justify-between items-center mb-8">
-        <h2 className="text-3xl font-bold text-gray-900">Available Draws</h2>
+        <h2 className="text-3xl font-bold">Available Draws</h2>
         {user && (
           <button
             onClick={() => navigate("/tickets")}
-            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
+            className="inline-flex bg-red-500 hover:bg-red-700 items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md transition-all duration-300"
           >
             My Tickets
           </button>
@@ -93,7 +93,7 @@ export default function DrawList() {
         {draws.map((draw) => (
           <div
             key={draw.id}
-            className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
+            className="bg-white dark:bg-neutral-700 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
           >
             <img
               src={draw.image || "/placeholder-draw.jpg"}
@@ -105,25 +105,23 @@ export default function DrawList() {
             />
             <div className="p-6">
               <div className="flex justify-between items-start mb-4">
-                <h3 className="text-xl font-semibold text-gray-900">
+                <h3 className="text-xl font-semibold ">
                   {draw.title}
                 </h3>
                 <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
                   Active
                 </span>
               </div>
-              <p className="text-gray-500 mb-4">{draw.description}</p>
+              <p className="text-neutral-500 mb-4">{draw.description}</p>
               <div className="flex justify-between items-center">
-                <div className="text-lg font-semibold text-indigo-600">
-                  ${draw.price}
-                </div>
+                <div className="text-lg font-semibold">${draw.price}</div>
                 <button
                   onClick={() => handleEnterDraw(draw.id)}
                   disabled={draw.hasEntered}
                   className={`inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md ${
                     draw.hasEntered
                       ? "bg-green-600 text-white cursor-not-allowed"
-                      : "text-white bg-indigo-600 hover:bg-indigo-700"
+                      : "text-white bg-red-500 hover:bg-red-700"
                   }`}
                 >
                   {draw.hasEntered ? "Subscribed" : "Enter Draw"}

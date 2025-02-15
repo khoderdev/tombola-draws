@@ -187,6 +187,15 @@ export const adminService = {
     const response = await api.delete(`/admin/draws/${drawId}`);
     return response.data;
   },
+
+  uploadImage: async (formData) => {
+    const response = await api.post("/admin/upload-image", formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
+  },
 };
 
 export default api;

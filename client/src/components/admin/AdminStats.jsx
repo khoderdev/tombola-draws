@@ -1,48 +1,90 @@
+import PropTypes from "prop-types";
+
 export default function AdminStats({ stats }) {
   if (!stats) return null;
 
   const cards = [
     {
-      title: 'Total Users',
-      value: stats.totalUsers,
-      change: stats.userGrowth,
-      changeType: stats.userGrowth >= 0 ? 'increase' : 'decrease',
+      title: "Total Users",
+      value: Number(stats.totalUsers || 0),
+      change: Number(stats.userGrowth || 0),
+      changeType: Number(stats.userGrowth || 0) >= 0 ? "increase" : "decrease",
       icon: (
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+        <svg
+          className="w-6 h-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+          />
         </svg>
       ),
     },
     {
-      title: 'Active Draws',
-      value: stats.activeDraws,
-      change: stats.drawGrowth,
-      changeType: stats.drawGrowth >= 0 ? 'increase' : 'decrease',
+      title: "Active Draws",
+      value: Number(stats.activeDraws || 0),
+      change: Number(stats.drawGrowth || 0),
+      changeType: Number(stats.drawGrowth || 0) >= 0 ? "increase" : "decrease",
       icon: (
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
+        <svg
+          className="w-6 h-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"
+          />
         </svg>
       ),
     },
     {
-      title: 'Total Revenue',
-      value: `$${stats.totalRevenue.toLocaleString()}`,
-      change: stats.revenueGrowth,
-      changeType: stats.revenueGrowth >= 0 ? 'increase' : 'decrease',
+      title: "Total Revenue",
+      value: `$${Number(stats.totalRevenue || 0).toLocaleString()}`,
+      change: Number(stats.revenueGrowth || 0),
+      changeType: Number(stats.revenueGrowth || 0) >= 0 ? "increase" : "decrease",
       icon: (
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        <svg
+          className="w-6 h-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
         </svg>
       ),
     },
     {
-      title: 'Conversion Rate',
-      value: `${stats.conversionRate}%`,
-      change: stats.conversionGrowth,
-      changeType: stats.conversionGrowth >= 0 ? 'increase' : 'decrease',
+      title: "Conversion Rate",
+      value: `${Number(stats.conversionRate || 0).toFixed(1)}%`,
+      change: Number(stats.conversionGrowth || 0),
+      changeType: Number(stats.conversionGrowth || 0) >= 0 ? "increase" : "decrease",
       icon: (
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+        <svg
+          className="w-6 h-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+          />
         </svg>
       ),
     },
@@ -54,32 +96,32 @@ export default function AdminStats({ stats }) {
         {cards.map((card) => (
           <div
             key={card.title}
-            className="bg-white overflow-hidden shadow rounded-lg"
+            className="bg-white dark:bg-neutral-700 overflow-hidden shadow rounded-lg"
           >
             <div className="p-5">
               <div className="flex items-center">
                 <div className="flex-shrink-0">
-                  <div className="rounded-md bg-indigo-500 p-3 text-white">
+                  <div className="rounded-md bg-blue-500 p-3">
                     {card.icon}
                   </div>
                 </div>
                 <div className="ml-5 w-0 flex-1">
                   <dl>
-                    <dt className="text-sm font-medium text-gray-500 truncate">
+                    <dt className="text-sm font-medium text-neutral-500 truncate">
                       {card.title}
                     </dt>
                     <dd className="flex items-baseline">
-                      <div className="text-2xl font-semibold text-gray-900">
+                      <div className="text-2xl font-semibold ">
                         {card.value}
                       </div>
                       <div
                         className={`ml-2 flex items-baseline text-sm font-semibold ${
-                          card.changeType === 'increase'
-                            ? 'text-green-600'
-                            : 'text-red-600'
+                          card.changeType === "increase"
+                            ? "text-green-600"
+                            : "text-red-500"
                         }`}
                       >
-                        {card.changeType === 'increase' ? (
+                        {card.changeType === "increase" ? (
                           <svg
                             className="w-5 h-5 flex-shrink-0 self-center"
                             fill="none"
@@ -109,9 +151,9 @@ export default function AdminStats({ stats }) {
                           </svg>
                         )}
                         <span className="sr-only">
-                          {card.changeType === 'increase'
-                            ? 'Increased'
-                            : 'Decreased'}{' '}
+                          {card.changeType === "increase"
+                            ? "Increased"
+                            : "Decreased"}{" "}
                           by
                         </span>
                         {Math.abs(card.change)}%
@@ -127,16 +169,14 @@ export default function AdminStats({ stats }) {
 
       {/* Recent Activity */}
       <div className="mt-8">
-        <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">
-          Recent Activity
-        </h3>
-        <div className="bg-white shadow overflow-hidden sm:rounded-md">
-          <ul className="divide-y divide-gray-200">
+        <h3 className="text-lg leading-6 font-medium mb-4">Recent Activity</h3>
+        <div className="bg-white dark:bg-neutral-700 shadow overflow-hidden sm:rounded-md">
+          <ul className="divide-y divide-neutral-400">
             {stats.recentActivity?.map((activity) => (
               <li key={activity.id}>
                 <div className="px-4 py-4 sm:px-6">
                   <div className="flex items-center justify-between">
-                    <p className="text-sm font-medium text-indigo-600 truncate">
+                    <p className="text-sm font-medium text-blue-500 truncate">
                       {activity.title}
                     </p>
                     <div className="ml-2 flex-shrink-0 flex">
@@ -147,13 +187,13 @@ export default function AdminStats({ stats }) {
                   </div>
                   <div className="mt-2 sm:flex sm:justify-between">
                     <div className="sm:flex">
-                      <p className="text-sm text-gray-500">
+                      <p className="text-sm ">
                         {activity.description}
                       </p>
                     </div>
-                    <div className="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
+                    <div className="mt-2 flex items-center text-sm sm:mt-0">
                       <p>
-                        {new Date(activity.timestamp).toLocaleDateString()} at{' '}
+                        {new Date(activity.timestamp).toLocaleDateString()} at{" "}
                         {new Date(activity.timestamp).toLocaleTimeString()}
                       </p>
                     </div>
@@ -167,3 +207,25 @@ export default function AdminStats({ stats }) {
     </div>
   );
 }
+
+AdminStats.propTypes = {
+  stats: PropTypes.shape({
+    totalUsers: PropTypes.number.isRequired,
+    userGrowth: PropTypes.number.isRequired,
+    activeDraws: PropTypes.number.isRequired,
+    drawGrowth: PropTypes.number.isRequired,
+    totalRevenue: PropTypes.number.isRequired,
+    revenueGrowth: PropTypes.number.isRequired,
+    conversionRate: PropTypes.number.isRequired,
+    conversionGrowth: PropTypes.number.isRequired,
+    recentActivity: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.string.isRequired,
+        title: PropTypes.string.isRequired,
+        type: PropTypes.string.isRequired,
+        description: PropTypes.string.isRequired,
+        timestamp: PropTypes.string.isRequired,
+      })
+    ),
+  }).isRequired,
+};

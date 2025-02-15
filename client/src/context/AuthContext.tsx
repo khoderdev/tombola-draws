@@ -1,11 +1,19 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { useNavigate, useLocation, Navigate } from "react-router-dom";
 import { authService } from "../services/api";
+import React from "react";
 
-const AuthContext = createContext(null);
+// Define User interface
+export interface User {
+  name: string;
+  avatar?: string;
+  role?: string;
+}
+
+const AuthContext = createContext<User | null>(null);
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const navigate = useNavigate();
@@ -22,7 +30,10 @@ export function AuthProvider({ children }) {
         const userData = JSON.parse(storedUser);
         setUser(userData);
         // Navigate to appropriate dashboard if on login/register page
-        if (location.pathname === "/login" || location.pathname === "/register") {
+        if (
+          location.pathname === "/login" ||
+          location.pathname === "/register"
+        ) {
           navigateToDashboard(userData);
         }
         // Refresh token periodically
@@ -47,7 +58,7 @@ export function AuthProvider({ children }) {
     }
   };
 
-  const navigateToDashboard = (userData) => {
+  const navigateToDashboard = (userData: User) => {
     if (userData.role === "admin") {
       navigate("/admin");
     } else {
@@ -55,7 +66,7 @@ export function AuthProvider({ children }) {
     }
   };
 
-  const login = async (credentials) => {
+  const login = async (credentials: any) => {
     try {
       setError("");
       const response = await authService.login(credentials);
@@ -73,7 +84,7 @@ export function AuthProvider({ children }) {
     }
   };
 
-  const register = async (userData) => {
+  const register = async (userData: any) => {
     try {
       setError("");
       const response = await authService.register(userData);
@@ -97,7 +108,7 @@ export function AuthProvider({ children }) {
     navigate("/login");
   };
 
-  const forgotPassword = async (email) => {
+  const forgotPassword = async (email: string) => {
     try {
       setError("");
       await authService.forgotPassword(email);
@@ -107,7 +118,7 @@ export function AuthProvider({ children }) {
     }
   };
 
-  const resetPassword = async (token, password) => {
+  const resetPassword = async (token: string, password: string) => {
     try {
       setError("");
       await authService.resetPassword(token, password);
@@ -117,7 +128,7 @@ export function AuthProvider({ children }) {
     }
   };
 
-  const verifyEmail = async (token) => {
+  const verifyEmail = async (token: string) => {
     try {
       setError("");
       await authService.verifyEmail(token);
@@ -157,7 +168,13 @@ export const useAuth = () => {
 };
 
 // Protected Route Component
-export function RequireAuth({ children, allowedRoles = [] }) {
+export function RequireAuth({
+  children,
+  allowedRoles = [],
+}: {
+  children: React.ReactNode;
+  allowedRoles?: string[];
+}) {
   const { user, loading } = useAuth();
   const location = useLocation();
 
