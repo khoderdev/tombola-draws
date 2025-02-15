@@ -26,6 +26,7 @@ export default function AdminDashboard() {
       const response = await adminService.getStats();
       setStats(response.data);
     } catch (err) {
+      console.error(err);
       setError("Failed to load statistics");
     } finally {
       setLoading(false);
@@ -38,6 +39,8 @@ export default function AdminDashboard() {
       const response = await adminService.getPendingTickets();
       setPendingTickets(response.data.tickets);
     } catch (err) {
+      console.error(err);
+      console.log(err); // Added console log for debugging
       setError("Failed to load pending tickets");
     } finally {
       setLoading(false);
@@ -57,6 +60,7 @@ export default function AdminDashboard() {
         fetchStats();
       }
     } catch (err) {
+      console.error(err);
       setError("Failed to update ticket status");
     }
   };
@@ -79,26 +83,28 @@ export default function AdminDashboard() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Tabs */}
-      <div className="border-b border-neutral-200 mb-4">
-        <nav className="-mb-px flex space-x-8">
-          {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`${
-                activeTab === tab.id
-                  ? "border-blue-500 text-blue-600"
-                  : "border-transparent text-neutral-500 hover:border-neutral-300"
-              } whitespace-nowrap py-4 px-1 border-b-2 font-medium`}
-            >
-              {tab.name}
-              {tab.id === "pending" && stats?.pendingTickets > 0 && (
-                <span className="ml-2 px-2 py-1 text-xs font-medium rounded-full bg-red-100 text-red-800">
-                  {stats.pendingTickets}
-                </span>
-              )}
-            </button>
-          ))}
+      <div className="border-b border-neutral-200 dark:border-neutral-700 mb-4">
+        <nav className="overflow-x-auto" aria-label="Tabs">
+          <div className="flex min-w-full">
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`${
+                  activeTab === tab.id
+                    ? "border-blue-500 text-blue-600"
+                    : "border-transparent text-neutral-500 hover:border-neutral-300"
+                } whitespace-nowrap py-4 px-6 border-b-2 font-medium flex-shrink-0 flex items-center`}
+              >
+                {tab.name}
+                {tab.id === "pending" && stats?.pendingTickets > 0 && (
+                  <span className="ml-2 px-2 py-1 text-xs font-medium rounded-full bg-red-100 text-red-800">
+                    {stats.pendingTickets}
+                  </span>
+                )}
+              </button>
+            ))}
+          </div>
         </nav>
       </div>
 

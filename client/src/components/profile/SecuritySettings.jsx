@@ -61,8 +61,8 @@ export default function SecuritySettings() {
 
         <div className="mt-5 md:mt-0 md:col-span-2">
           <form onSubmit={handleSubmit}>
-            <div className="shadow-lg rounded-lg overflow-hidden max-w-md">
-              <div className=" px-6 py-6 bg-white dark:bg-neutral-800 space-y-6">
+            <div className="overflow-hidden max-w-md">
+              <div className="px-6 py-6 bg-white dark:bg-neutral-800 space-y-6">
                 <div className="space-y-6">
                   <div>
                     <label
@@ -78,7 +78,7 @@ export default function SecuritySettings() {
                       value={formData.currentPassword}
                       onChange={handleChange}
                       required
-                      className="mt-2 block w-full px-4 py-2 border border-neutral-300 dark:border-neutral-600 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 dark:bg-neutral-700 dark:text-white"
+                      className="mt-2 block w-full px-4 py-2 border border-neutral-300 dark:border-neutral-600 rounded-lg shadow-sm focus:ring-2 outline-none focus:ring-blue-500 focus:border-blue-500 transition duration-200 dark:bg-neutral-700 dark:text-white"
                     />
                   </div>
 
@@ -96,7 +96,7 @@ export default function SecuritySettings() {
                       value={formData.newPassword}
                       onChange={handleChange}
                       required
-                      className="mt-2 block w-full px-4 py-2 border border-neutral-300 dark:border-neutral-600 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 dark:bg-neutral-700 dark:text-white"
+                      className="mt-2 block w-full px-4 py-2 border border-neutral-300 dark:border-neutral-600 rounded-lg shadow-sm focus:ring-2 outline-none focus:ring-blue-500 focus:border-blue-500 transition duration-200 dark:bg-neutral-700 dark:text-white"
                     />
                   </div>
 
@@ -114,7 +114,7 @@ export default function SecuritySettings() {
                       value={formData.confirmPassword}
                       onChange={handleChange}
                       required
-                      className="mt-2 block w-full px-4 py-2 border border-neutral-300 dark:border-neutral-600 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 dark:bg-neutral-700 dark:text-white"
+                      className="mt-2 block w-full px-4 py-2 border border-neutral-300 dark:border-neutral-600 rounded-lg shadow-sm focus:ring-2 outline-none focus:ring-blue-500 focus:border-blue-500 transition duration-200 dark:bg-neutral-700 dark:text-white"
                     />
                   </div>
                 </div>
@@ -131,7 +131,7 @@ export default function SecuritySettings() {
                   </div>
                 )}
               </div>
-              <div className="px-6 py-4 bg-neutral-50 dark:bg-neutral-700 text-right">
+              <div className="px-6 py-4 text-right">
                 <button
                   type="submit"
                   disabled={loading}
@@ -205,7 +205,8 @@ export default function SecuritySettings() {
                     Enable two-factor authentication
                   </label>
                   <p className="mt-1 text-neutral-500 dark:text-neutral-400">
-                    Coming soon! We&apos;re working on implementing this feature.
+                    Coming soon! We&apos;re working on implementing this
+                    feature.
                   </p>
                 </div>
               </div>

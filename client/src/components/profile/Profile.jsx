@@ -22,6 +22,7 @@ export default function Profile() {
       const response = await profileService.getProfile();
       setProfile(response.data.user);
     } catch (err) {
+      console.error(err);
       setError("Failed to load profile");
     } finally {
       setLoading(false);
@@ -54,7 +55,7 @@ export default function Profile() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="bg-white dark:bg-neutral-800 shadow rounded-lg">
         {/* Profile Header */}
-        <div className="px-4 py-5 sm:px-6 border-b border-neutral-500">
+        <div className="px-4 py-5 sm:px-6 border-neutral-500">
           <div className="flex items-center space-x-4">
             <img
               src={
@@ -76,21 +77,23 @@ export default function Profile() {
         </div>
 
         {/* Tabs */}
-        <div className="border-b border-neutral-500">
-          <nav className="-mb-px flex space-x-8 px-6" aria-label="Tabs">
-            {tabs.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`${
-                  activeTab === tab.id
-                    ? "border-blue-500 text-blue-600"
-                    : "border-transparent text-neutral-500 hover:text-gray-700 hover:border-gray-300"
-                } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
-              >
-                {tab.name}
-              </button>
-            ))}
+        <div className="border-b border-neutral-200 dark:border-neutral-700">
+          <nav className="overflow-x-auto" aria-label="Tabs">
+            <div className="flex min-w-full px-6">
+              {tabs.map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`${
+                    activeTab === tab.id
+                      ? "border-blue-500 text-blue-600"
+                      : "border-transparent text-neutral-500 hover:text-gray-700 hover:border-gray-300"
+                  } whitespace-nowrap py-4 px-6 border-b-2 font-medium text-sm flex-shrink-0`}
+                >
+                  {tab.name}
+                </button>
+              ))}
+            </div>
           </nav>
         </div>
 

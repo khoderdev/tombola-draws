@@ -45,6 +45,7 @@ body {
 
 ::-webkit-scrollbar {
   width: 6px;
+  height: 6px;
   background-color: #222;
 }
 
@@ -93,7 +94,7 @@ body {
 
 /* Optional: Add a pseudo-element for a ripple effect */
 .btn::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 50%;
   left: 50%;
