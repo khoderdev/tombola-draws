@@ -124,6 +124,11 @@ exports.getStats = async (req, res) => {
       })),
     ].sort((a, b) => b.timestamp - a.timestamp);
 
+    // Add pending tickets count to stats
+    const pendingTickets = await Ticket.count({
+      where: { status: 'pending' }
+    });
+
     res.status(200).json({
       status: 'success',
       data: {
@@ -134,6 +139,7 @@ exports.getStats = async (req, res) => {
         drawGrowth,
         conversionRate,
         conversionRateChange,
+        pendingTickets,
         recentActivity: activity.slice(0, 5),
       },
     });
@@ -393,6 +399,40 @@ exports.deleteDraw = async (req, res) => {
     res.status(500).json({
       status: 'error',
       message: 'Error deleting draw',
+    });
+  }
+};
+
+exports.getPendingTickets = async (req, res) => {
+  try {
+    const pendingTickets = await Ticket.findAll({
+      where: { status: 'pending' },
+      include: [
+        {
+          model: Draw,
+          as: 'Draw',
+          attributes: ['id', 'title', 'prize', 'price'],
+        },
+        {
+          model: User,
+          as: 'User',
+          attributes: ['id', 'name', 'email'],
+        },
+      ],
+      order: [['purchaseDate', 'DESC']],
+    });
+
+    res.status(200).json({
+      status: 'success',
+      data: {
+        tickets: pendingTickets,
+      },
+    });
+  } catch (error) {
+    console.error('Error fetching pending tickets:', error);
+    res.status(500).json({
+      status: 'error',
+      message: 'Error fetching pending tickets',
     });
   }
 };

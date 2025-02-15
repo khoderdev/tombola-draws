@@ -196,6 +196,16 @@ export const adminService = {
     });
     return response.data;
   },
+
+  getPendingTickets: async () => {
+    const response = await api.get('/admin/pending-tickets');
+    return response.data;
+  },
+
+  updateTicketStatus: async (ticketId, statusData) => {
+    const response = await api.patch(`/admin/tickets/${ticketId}/status`, statusData);
+    return response.data;
+  },
 };
 
 export default api;
