@@ -38,21 +38,18 @@ const upload = multer({
 router.use(protect);
 
 // Get profile
-router.get('/profile', profileController.getProfile);
+router.get('/', profileController.getProfile);
 
 // Update profile
-router.put('/profile', profileController.updateProfile);
+router.put('/', profileController.updateProfile);
 
 // Change password
-router.post('/profile/change-password', profileController.changePassword);
+router.post('/change-password', profileController.changePassword);
 
 // Upload avatar
-router.post('/profile/avatar', upload.single('avatar'), profileController.uploadAvatar);
+router.post('/avatar', upload.single('avatar'), profileController.uploadAvatar);
 
 // Get profile stats
-router.get('/profile/stats', profileController.getStats);
-
-// Get profile stats
-router.get('/profile/stats', profileController.getStats);
+router.get('/stats', profileController.getStats);
 
 module.exports = router;

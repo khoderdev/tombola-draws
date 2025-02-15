@@ -14,7 +14,7 @@ export default function ProfileStats() {
     try {
       setLoading(true);
       const response = await profileService.getStats();
-      setStats(response.data);
+      setStats(response.data.stats);
     } catch (err) {
       setError("Failed to load statistics");
     } finally {
@@ -52,7 +52,7 @@ export default function ProfileStats() {
     },
     {
       title: "Active Draws",
-      value: stats?.activeDraws || 0,
+      value: stats?.upcomingDraws || 0,
       icon: (
         <svg
           className="w-6 h-6"
@@ -71,7 +71,7 @@ export default function ProfileStats() {
     },
     {
       title: "Wins",
-      value: stats?.wins || 0,
+      value: stats?.wonTickets || 0,
       icon: (
         <svg
           className="w-6 h-6"

@@ -122,29 +122,29 @@ export const drawsService = {
 // Profile service
 export const profileService = {
   getProfile: async () => {
-    const response = await api.get('/profile/profile');
+    const response = await api.get('/profile');
     return response.data;
   },
 
   updateProfile: async (data) => {
-    const response = await api.put('/profile/profile', data);
+    const response = await api.put('/profile', data);
     return response.data;
   },
 
   changePassword: async (data) => {
-    const response = await api.post('/profile/profile/change-password', data);
+    const response = await api.post('/profile/change-password', data);
     return response.data;
   },
 
   uploadAvatar: async (formData) => {
-    const response = await api.post('/profile/profile/avatar', formData, {
+    const response = await api.post('/profile/avatar', formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
     return response.data;
   },
 
   getStats: async () => {
-    const response = await api.get('/profile/profile/stats');
+    const response = await api.get('/profile/stats');
     return response.data;
   },
 };
