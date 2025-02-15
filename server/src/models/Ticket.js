@@ -1,7 +1,7 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/database');
+const { DataTypes } = require("sequelize");
+const sequelize = require("../config/database");
 
-const Ticket = sequelize.define('Ticket', {
+const Ticket = sequelize.define("Ticket", {
   id: {
     type: DataTypes.UUID,
     defaultValue: DataTypes.UUIDV4,
@@ -15,16 +15,16 @@ const Ticket = sequelize.define('Ticket', {
     type: DataTypes.UUID,
     allowNull: false,
     references: {
-      model: 'Users',
-      key: 'id',
+      model: "Users",
+      key: "id",
     },
   },
   drawId: {
     type: DataTypes.UUID,
     allowNull: false,
     references: {
-      model: 'Draws',
-      key: 'id',
+      model: "Draws",
+      key: "id",
     },
   },
   purchaseDate: {
@@ -33,12 +33,19 @@ const Ticket = sequelize.define('Ticket', {
     defaultValue: DataTypes.NOW,
   },
   status: {
-    type: DataTypes.ENUM('pending', 'accepted', 'declined', 'active', 'won', 'lost'),
-    defaultValue: 'pending',
+    type: DataTypes.ENUM(
+      "pending",
+      "accepted",
+      "declined",
+      "active",
+      "won",
+      "lost"
+    ),
+    defaultValue: "pending",
   },
   paymentStatus: {
-    type: DataTypes.ENUM('pending', 'completed', 'failed'),
-    defaultValue: 'pending',
+    type: DataTypes.ENUM("pending", "completed", "failed"),
+    defaultValue: "pending",
   },
   paymentMethod: {
     type: DataTypes.STRING,
@@ -57,13 +64,13 @@ const Ticket = sequelize.define('Ticket', {
 // Define associations
 Ticket.associate = (models) => {
   Ticket.belongsTo(models.User, {
-    foreignKey: 'userId',
-    as: 'User'
+    foreignKey: "userId",
+    as: "User",
   });
-  
+
   Ticket.belongsTo(models.Draw, {
-    foreignKey: 'drawId',
-    as: 'Draw'
+    foreignKey: "drawId",
+    as: "Draw",
   });
 };
 

@@ -1,5 +1,5 @@
-const { User, Draw, Ticket } = require('../models');
-const { v4: uuidv4 } = require('uuid');
+const { User, Draw, Ticket } = require("../models");
+const { v4: uuidv4 } = require("uuid");
 
 exports.getMyTickets = async (req, res) => {
   try {
@@ -8,30 +8,35 @@ exports.getMyTickets = async (req, res) => {
       include: [
         {
           model: Draw,
-          attributes: ['id', 'title', 'prize', 'endDate', 'status', 'price'],
+          as: "Draw",
+          attributes: ["id", "title", "prize", "endDate", "status", "price"],
         },
       ],
-      order: [['purchaseDate', 'DESC']],
+      order: [["purchaseDate", "DESC"]],
     });
 
     res.status(200).json({
-      status: 'success',
+      status: "success",
       data: {
-        tickets: tickets.map((ticket) => ({
-          id: ticket.id,
-          number: ticket.number,
-          status: ticket.status,
-          paymentStatus: ticket.paymentStatus,
-          purchaseDate: ticket.purchaseDate,
-          draw: ticket.Draw,
-        })),
+        tickets: tickets.map((ticket) => {
+          const plainTicket = ticket.get({ plain: true });
+          return {
+            ...plainTicket,
+            Draw: plainTicket.Draw
+              ? {
+                  ...plainTicket.Draw,
+                  price: parseFloat(plainTicket.Draw.price).toFixed(2),
+                }
+              : null,
+          };
+        }),
       },
     });
   } catch (error) {
-    console.error('Error fetching tickets:', error);
+    console.error("Error fetching tickets:", error);
     res.status(500).json({
-      status: 'error',
-      message: 'Error fetching tickets',
+      status: "error",
+      message: "Error fetching tickets",
     });
   }
 };
@@ -46,16 +51,16 @@ exports.purchaseTicket = async (req, res) => {
     const draw = await Draw.findByPk(drawId);
     if (!draw) {
       return res.status(404).json({
-        status: 'error',
-        message: 'Draw not found',
+        status: "error",
+        message: "Draw not found",
       });
     }
 
     // Check if draw is active
-    if (draw.status !== 'active') {
+    if (draw.status !== "active") {
       return res.status(400).json({
-        status: 'error',
-        message: 'Draw is not active',
+        status: "error",
+        message: "Draw is not active",
       });
     }
 
@@ -63,8 +68,8 @@ exports.purchaseTicket = async (req, res) => {
     const ticketCount = await Ticket.count({ where: { drawId } });
     if (draw.maxTickets && ticketCount >= draw.maxTickets) {
       return res.status(400).json({
-        status: 'error',
-        message: 'Draw has reached maximum number of tickets',
+        status: "error",
+        message: "Draw has reached maximum number of tickets",
       });
     }
 
@@ -76,15 +81,15 @@ exports.purchaseTicket = async (req, res) => {
       number: ticketNumber,
       userId,
       drawId,
-      status: 'pending',
-      paymentStatus: 'pending',
+      status: "pending",
+      paymentStatus: "pending",
       paymentMethod,
       paymentReference: uuidv4(),
     });
 
     res.status(201).json({
-      status: 'success',
-      message: 'Ticket subscription pending approval',
+      status: "success",
+      message: "Ticket subscription pending approval",
       data: {
         ticket: {
           id: ticket.id,
@@ -97,10 +102,10 @@ exports.purchaseTicket = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error('Error purchasing ticket:', error);
+    console.error("Error purchasing ticket:", error);
     res.status(500).json({
-      status: 'error',
-      message: 'Error purchasing ticket',
+      status: "error",
+      message: "Error purchasing ticket",
     });
   }
 };
@@ -111,31 +116,31 @@ exports.updateTicketStatus = async (req, res) => {
     const { status, adminNote } = req.body;
 
     // Only admin can update ticket status
-    if (req.user.role !== 'admin') {
+    if (req.user.role !== "admin") {
       return res.status(403).json({
-        status: 'error',
-        message: 'Unauthorized to perform this action',
+        status: "error",
+        message: "Unauthorized to perform this action",
       });
     }
 
     const ticket = await Ticket.findByPk(ticketId, {
-      include: [{ model: Draw, as: 'Draw' }],
+      include: [{ model: Draw, as: "Draw" }],
     });
 
     if (!ticket) {
       return res.status(404).json({
-        status: 'error',
-        message: 'Ticket not found',
+        status: "error",
+        message: "Ticket not found",
       });
     }
 
     // Update ticket status
-    if (status === 'accepted') {
-      ticket.status = 'active';
-      ticket.paymentStatus = 'completed';
-    } else if (status === 'declined') {
-      ticket.status = 'declined';
-      ticket.paymentStatus = 'failed';
+    if (status === "accepted") {
+      ticket.status = "active";
+      ticket.paymentStatus = "completed";
+    } else if (status === "declined") {
+      ticket.status = "declined";
+      ticket.paymentStatus = "failed";
     }
 
     if (adminNote) {
@@ -145,17 +150,17 @@ exports.updateTicketStatus = async (req, res) => {
     await ticket.save();
 
     res.status(200).json({
-      status: 'success',
+      status: "success",
       message: `Ticket ${status} successfully`,
       data: {
         ticket,
       },
     });
   } catch (error) {
-    console.error('Error updating ticket status:', error);
+    console.error("Error updating ticket status:", error);
     res.status(500).json({
-      status: 'error',
-      message: 'Error updating ticket status',
+      status: "error",
+      message: "Error updating ticket status",
     });
   }
 };
@@ -169,41 +174,41 @@ exports.getTicketDetails = async (req, res) => {
       include: [
         {
           model: Draw,
-          attributes: ['id', 'title', 'prize', 'endDate', 'status', 'price'],
+          attributes: ["id", "title", "prize", "endDate", "status", "price"],
         },
         {
           model: User,
-          attributes: ['id', 'name', 'email'],
+          attributes: ["id", "name", "email"],
         },
       ],
     });
 
     if (!ticket) {
       return res.status(404).json({
-        status: 'error',
-        message: 'Ticket not found',
+        status: "error",
+        message: "Ticket not found",
       });
     }
 
     // Check if user is authorized to view ticket details
     if (!req.user.isAdmin && ticket.userId !== req.user.id) {
       return res.status(403).json({
-        status: 'error',
-        message: 'Unauthorized to view ticket details',
+        status: "error",
+        message: "Unauthorized to view ticket details",
       });
     }
 
     res.status(200).json({
-      status: 'success',
+      status: "success",
       data: {
         ticket,
       },
     });
   } catch (error) {
-    console.error('Error fetching ticket details:', error);
+    console.error("Error fetching ticket details:", error);
     res.status(500).json({
-      status: 'error',
-      message: 'Error fetching ticket details',
+      status: "error",
+      message: "Error fetching ticket details",
     });
   }
 };

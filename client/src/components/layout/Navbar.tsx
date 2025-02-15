@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, useScroll, useMotionValueEvent } from "framer-motion";
 import DarkLightSwitch from "./ThemeToggle";
 import Menu from "./Menu";
 import { useAuth, User } from "../../context/AuthContext";
@@ -12,16 +12,31 @@ export default function Navbar() {
   };
   const [menuOpen, setMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [hidden, setHidden] = useState(false);
+  const { scrollY } = useScroll();
+  const lastScrollY = useRef(0);
+
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    const direction = latest > lastScrollY.current;
+    if (direction !== hidden && latest > 50) {
+      setHidden(direction);
+    }
+    lastScrollY.current = latest;
+  });
 
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const navVariants = {
-    initial: { y: "-100%", opacity: 0 },
-    animate: {
+    visible: { 
       y: 0,
       opacity: 1,
-      transition: { duration: 0.5, ease: [0.64, 0, 0.78, 0] },
+      transition: { duration: 0.2, ease: "easeInOut" }
     },
+    hidden: { 
+      y: "-100%",
+      opacity: 0,
+      transition: { duration: 0.2, ease: "easeInOut" }
+    }
   };
 
   const handleAvatarClick = () => {
@@ -49,8 +64,12 @@ export default function Navbar() {
   }, []);
 
   return (
-    <motion.nav variants={navVariants} initial="initial" animate="animate">
-      <div className=" px-4 sm:px-6 lg:px-8 border-b">
+    <motion.nav
+      variants={navVariants}
+      animate={hidden ? "hidden" : "visible"}
+      className="fixed top-0 left-0 right-0 z-40 bg-neutral-100/75 dark:bg-neutral-900/75 backdrop-blur-md"
+    >
+      <div className=" px-4 sm:px-6 lg:px-8 shadow dark:shadow-neutral-800 sticky top-0 z-40 w-full">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex items-center">
@@ -60,11 +79,11 @@ export default function Navbar() {
           </div>
 
           {/* Right Side: Links, Avatar, Dark Mode Toggle, and Menu Button */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2 sm:space-x-4">
             {/* Draws Link */}
             <Link
               to="/draws"
-              className="bg-red-500 hover:bg-red-600 px-3 py-2 rounded-md"
+              className="bg-red-500 hover:bg-red-600 px-2 py-1 rounded-md"
             >
               Draws
             </Link>

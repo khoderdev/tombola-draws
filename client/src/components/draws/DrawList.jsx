@@ -30,9 +30,15 @@ export default function DrawList() {
     }
   }, []);
 
+  // Poll for updates every 5 seconds if user has entered any draws
   useEffect(() => {
     fetchDraws();
-  }, [fetchDraws]);
+
+    if (user && draws.some(draw => draw.hasEntered)) {
+      const interval = setInterval(fetchDraws, 5000);
+      return () => clearInterval(interval);
+    }
+  }, [fetchDraws, user]);
 
   const handleEnterDraw = useCallback(
     async (drawId) => {
@@ -90,7 +96,7 @@ export default function DrawList() {
     }
   };
 
-  if (loading) {
+  if (loading && !draws.length) {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="text-center">Loading draws...</div>

@@ -16,6 +16,7 @@ export default function MyTickets() {
     try {
       setLoading(true);
       const response = await drawsService.getMyTickets();
+      console.log('Tickets response:', response.data); // Debug log
       setTickets(response.data?.tickets || []);
     } catch (err) {
       console.error('Error fetching tickets:', err);
@@ -119,7 +120,7 @@ export default function MyTickets() {
                         Prize: {ticket.Draw?.prize || 'N/A'}
                       </p>
                       <p className="text-sm text-neutral-500 dark:text-neutral-400">
-                        Value: ${ticket.Draw?.price || 'N/A'}
+                        Price: ${ticket.Draw?.price || 'N/A'}
                       </p>
                     </div>
                     <div className="text-right">
