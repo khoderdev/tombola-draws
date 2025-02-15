@@ -21,7 +21,6 @@ app.use(express.json());
 app.use(morgan("dev"));
 
 // Routes
-// Welcome route
 app.get("/", (req, res) => {
   res.status(200).json({ message: "Welcome to Tombola Server!" });
 });
@@ -30,6 +29,16 @@ app.use("/api/draws", drawRoutes);
 app.use("/api/tickets", ticketRoutes);
 app.use("/api/profile", profileRoutes);
 app.use("/api/admin", adminRoutes);
+app.get('/', (req, res) => {
+	res.status(200).json({ message: 'Welcome to Tombola Server!' });
+});
+
+app.use('/api/auth', authRoutes);
+app.use('/api/draws', drawRoutes);
+app.use('/api/tickets', ticketRoutes);
+app.use('/api/profile', profileRoutes);
+app.use('/api/admin', adminRoutes);
+
 
 // Error handling middleware
 app.use((err, req, res, next) => {
