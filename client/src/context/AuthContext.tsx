@@ -10,7 +10,22 @@ export interface User {
   role?: string;
 }
 
-const AuthContext = createContext<User | null>(null);
+// Define AuthContextType interface
+export interface AuthContextType {
+  user: User | null;
+  loading: boolean;
+  error: string;
+  isAdmin: boolean;
+  isAuthenticated: boolean;
+  login: (credentials: any) => Promise<any>;
+  register: (userData: any) => Promise<any>;
+  logout: () => void;
+  forgotPassword: (email: string) => Promise<any>;
+  resetPassword: (token: string, password: string) => Promise<any>;
+  verifyEmail: (token: string) => Promise<any>;
+}
+
+const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState<User | null>(null);
@@ -28,6 +43,10 @@ export function AuthProvider({ children }) {
       const storedUser = localStorage.getItem("user");
       if (storedUser) {
         const userData = JSON.parse(storedUser);
+        // Ensure name property is present
+        if (!userData.name) {
+          throw new Error("User data is missing the name property");
+        }
         setUser(userData);
         // Navigate to appropriate dashboard if on login/register page
         if (
@@ -40,9 +59,10 @@ export function AuthProvider({ children }) {
         const refreshToken = async () => {
           try {
             const data = await authService.refreshToken();
-            if (data.data?.user) {
-              setUser(data.data.user);
+            if (data.data?.user && !data.data.user.name) {
+              throw new Error("User data is missing the name property");
             }
+            setUser(data.data.user);
           } catch (err) {
             console.error("Token refresh failed:", err);
             logout();
@@ -71,6 +91,10 @@ export function AuthProvider({ children }) {
       setError("");
       const response = await authService.login(credentials);
       if (response.data?.user) {
+        // Ensure name property is present
+        if (!response.data.user.name) {
+          throw new Error("User data is missing the name property");
+        }
         setUser(response.data.user);
         navigateToDashboard(response.data.user);
       } else {
@@ -89,6 +113,10 @@ export function AuthProvider({ children }) {
       setError("");
       const response = await authService.register(userData);
       if (response.data?.user) {
+        // Ensure name property is present
+        if (!response.data.user.name) {
+          throw new Error("User data is missing the name property");
+        }
         setUser(response.data.user);
         navigateToDashboard(response.data.user);
       } else {
@@ -186,7 +214,7 @@ export function RequireAuth({
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  if (allowedRoles.length > 0 && !allowedRoles.includes(user.role)) {
+  if (allowedRoles.length > 0 && user.role && !allowedRoles.includes(user.role)) {
     return <Navigate to="/unauthorized" replace />;
   }
 
