@@ -1,6 +1,6 @@
-const User = require("./user");
-const Draw = require("./draw");
-const Ticket = require("./ticket");
+const User = require("./User");
+const Draw = require("./Draw");
+const Ticket = require("./Ticket");
 
 // Draw associations
 Draw.hasMany(Ticket, { foreignKey: "drawId", as: "tickets" });
