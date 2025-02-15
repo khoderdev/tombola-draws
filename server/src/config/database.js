@@ -31,13 +31,12 @@
 
 // module.exports = sequelize;
 
-
-
-require('dotenv').config();
-const { Sequelize } = require('sequelize');
+require("dotenv").config();
+const { Sequelize } = require("sequelize");
 
 // Parse the database URL
-const dbUrl = 'postgresql://root:aA8ay4wkMHxFUnvGVdhMpjHGJH0T4W9T@dpg-cuo376l2ng1s73e29l40-a/tombola_draws';
+const dbUrl =
+  "postgresql://root:aA8ay4wkMHxFUnvGVdhMpjHGJH0T4W9T@dpg-cuo376l2ng1s73e29l40-a/tombola_draws";
 const url = new URL(dbUrl);
 
 const sequelize = new Sequelize({
@@ -45,9 +44,9 @@ const sequelize = new Sequelize({
   username: url.username,
   password: url.password,
   host: url.hostname,
-  port: url.port || 5432, // Default PostgreSQL port is 5432
-  dialect: 'postgres',
-  logging: process.env.NODE_ENV === 'development' ? console.log : false,
+  port: url.port || 5432,
+  dialect: "postgres",
+  logging: process.env.NODE_ENV === "development" ? console.log : false,
   pool: {
     max: 5,
     min: 0,
@@ -60,10 +59,10 @@ const sequelize = new Sequelize({
 sequelize
   .authenticate()
   .then(() => {
-    console.log('Database connection has been established successfully.');
+    console.log("Database connection has been established successfully.");
   })
   .catch((err) => {
-    console.error('Unable to connect to the database:', err);
+    console.error("Unable to connect to the database:", err);
   });
 
 module.exports = sequelize;
