@@ -1,38 +1,42 @@
-require('dotenv').config();
-const express = require('express');
-const cors = require('cors');
-const morgan = require('morgan');
-const path = require('path');
-const fs = require('fs');
-const sequelize = require('./config/database');
+require("dotenv").config();
+const express = require("express");
+const cors = require("cors");
+const morgan = require("morgan");
+const path = require("path");
+const fs = require("fs");
+const sequelize = require("./config/database");
 
 // Import routes
-const authRoutes = require('./routes/auth.routes');
-const drawRoutes = require('./routes/draw.routes');
-const ticketRoutes = require('./routes/ticket.routes');
-const profileRoutes = require('./routes/profile.routes');
-const adminRoutes = require('./routes/admin.routes');
+const authRoutes = require("./routes/auth.routes");
+const drawRoutes = require("./routes/draw.routes");
+const ticketRoutes = require("./routes/ticket.routes");
+const profileRoutes = require("./routes/profile.routes");
+const adminRoutes = require("./routes/admin.routes");
 
 const app = express();
 
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use(morgan('dev'));
+app.use(morgan("dev"));
 
 // Routes
-app.use('/api/auth', authRoutes);
-app.use('/api/draws', drawRoutes);
-app.use('/api/tickets', ticketRoutes);
-app.use('/api/profile', profileRoutes);
-app.use('/api/admin', adminRoutes);
+// Welcome route
+app.get("/", (req, res) => {
+  res.status(200).json({ message: "Welcome to Tombola Server!" });
+});
+app.use("/api/auth", authRoutes);
+app.use("/api/draws", drawRoutes);
+app.use("/api/tickets", ticketRoutes);
+app.use("/api/profile", profileRoutes);
+app.use("/api/admin", adminRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({
-    status: 'error',
-    message: 'Something went wrong!',
+    status: "error",
+    message: "Something went wrong!",
   });
 });
 
@@ -40,12 +44,12 @@ const PORT = process.env.PORT || 3000;
 
 // Sync database and start server
 sequelize
-  .sync({ alter: process.env.NODE_ENV === 'development' })
+  .sync({ alter: process.env.NODE_ENV === "development" })
   .then(() => {
     app.listen(PORT, () => {
       console.log(`Server is running on port ${PORT}`);
     });
   })
   .catch((error) => {
-    console.error('Unable to connect to the database:', error);
+    console.error("Unable to connect to the database:", error);
   });
