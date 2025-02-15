@@ -20,20 +20,11 @@ app.use(cors());
 app.use(express.json());
 app.use(morgan('dev'));
 
-// Serve uploaded files
-app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
-
-// Ensure uploads directory exists
-const uploadsDir = path.join(__dirname, '../uploads');
-if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir, { recursive: true });
-}
-
 // Routes
 app.use('/api/auth', authRoutes);
-app.use('/api', ticketRoutes); 
-app.use('/api', profileRoutes);
 app.use('/api/draws', drawRoutes);
+app.use('/api/tickets', ticketRoutes);
+app.use('/api/profile', profileRoutes);
 app.use('/api/admin', adminRoutes);
 
 // Error handling middleware

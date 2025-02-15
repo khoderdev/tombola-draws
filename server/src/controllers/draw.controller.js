@@ -3,7 +3,7 @@ const { Op } = require("sequelize");
 
 exports.getDraws = async (req, res) => {
   try {
-    const userId = req.user?.id;
+    // Get all active draws
     let draws = await Draw.findAll({
       where: {
         status: "active",
@@ -15,20 +15,38 @@ exports.getDraws = async (req, res) => {
       raw: true,
     });
 
-    if (userId) {
-      // Get all tickets for this user
+    // If user is authenticated, add their ticket information
+    if (req.user) {
       const userTickets = await Ticket.findAll({
-        where: { userId: userId },
-        attributes: ['drawId'],
+        where: { userId: req.user.id },
+        attributes: ['drawId', 'status', 'id'],
         raw: true,
       });
 
-      const userDrawIds = new Set(userTickets.map(ticket => ticket.drawId));
+      const userTicketMap = userTickets.reduce((map, ticket) => {
+        map[ticket.drawId] = {
+          status: ticket.status,
+          id: ticket.id
+        };
+        return map;
+      }, {});
 
-      // Add hasEntered flag to each draw
+      draws = draws.map(draw => {
+        const ticketInfo = userTicketMap[draw.id];
+        return {
+          ...draw,
+          hasEntered: !!ticketInfo,
+          ticketStatus: ticketInfo ? ticketInfo.status : null,
+          ticketId: ticketInfo ? ticketInfo.id : null,
+        };
+      });
+    } else {
+      // For unauthenticated users, set default values
       draws = draws.map(draw => ({
         ...draw,
-        hasEntered: userDrawIds.has(draw.id),
+        hasEntered: false,
+        ticketStatus: null,
+        ticketId: null,
       }));
     }
 
@@ -105,7 +123,7 @@ exports.getMyTickets = async (req, res) => {
       include: [{
         model: Draw,
         as: 'Draw',
-        attributes: ['title', 'prize', 'endDate', 'status']
+        attributes: ['title', 'prize','price','endDate', 'status']
       }],
       order: [['createdAt', 'DESC']]
     });

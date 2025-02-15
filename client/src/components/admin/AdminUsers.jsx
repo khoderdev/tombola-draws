@@ -49,7 +49,7 @@ export default function AdminUsers() {
   if (loading) {
     return (
       <div className="flex justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
       </div>
     );
   }
@@ -91,25 +91,25 @@ export default function AdminUsers() {
                 <tr>
                   <th
                     scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider"
                   >
                     User
                   </th>
                   <th
                     scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider"
                   >
                     Role
                   </th>
                   <th
                     scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider"
                   >
                     Status
                   </th>
                   <th
                     scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider"
                   >
                     Joined
                   </th>
@@ -131,10 +131,10 @@ export default function AdminUsers() {
                           />
                         </div>
                         <div className="ml-4">
-                          <div className="text-sm font-medium text-gray-900">
+                          <div className="text-sm font-medium ">
                             {user.name}
                           </div>
-                          <div className="text-sm text-gray-500">
+                          <div className="text-sm text-neutral-500">
                             {user.email}
                           </div>
                         </div>
@@ -143,7 +143,7 @@ export default function AdminUsers() {
                     <td className="px-6 py-4 whitespace-nowrap">
                       {editingUser?.id === user.id ? (
                         <select
-                          className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                          className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                           value={editingUser.role}
                           onChange={(e) =>
                             setEditingUser({
@@ -178,7 +178,7 @@ export default function AdminUsers() {
                         {user.status}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-500">
                       {new Date(user.createdAt).toLocaleDateString()}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
@@ -188,13 +188,13 @@ export default function AdminUsers() {
                             onClick={() =>
                               handleUpdateUser(user.id, editingUser)
                             }
-                            className="text-indigo-600 hover:text-indigo-900"
+                            className="text-blue-600 hover:text-blue-900"
                           >
                             Save
                           </button>
                           <button
                             onClick={() => setEditingUser(null)}
-                            className="text-gray-600 hover:text-gray-900"
+                            className="text-gray-600 hover:"
                           >
                             Cancel
                           </button>
@@ -203,13 +203,13 @@ export default function AdminUsers() {
                         <div className="flex space-x-2">
                           <button
                             onClick={() => setEditingUser(user)}
-                            className="text-indigo-600 hover:text-indigo-900"
+                            className="text-blue-600 hover:text-blue-900"
                           >
                             Edit
                           </button>
                           <button
                             onClick={() => handleDeleteUser(user.id)}
-                            className="text-red-600 hover:text-red-900"
+                            className="text-red-500 hover:text-red-900"
                           >
                             Delete
                           </button>

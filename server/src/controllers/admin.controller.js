@@ -1,18 +1,29 @@
 const { User, Draw, Ticket } = require('../models');
 const { Op } = require('sequelize');
+const sequelize = require('../config/database');
 
 exports.getStats = async (req, res) => {
   try {
     const totalUsers = await User.count();
     const activeDraws = await Draw.count({ where: { status: 'active' } });
     
-    // Specify the table for price column
-    const totalRevenue = await Ticket.sum('Ticket.price', {
+    // Calculate total revenue by summing up (number of tickets * draw price)
+    const totalRevenue = await Ticket.findAll({
+      attributes: [
+        [sequelize.fn('COUNT', sequelize.col('Ticket.id')), 'ticketCount'],
+        [sequelize.col('Draw.price'), 'drawPrice']
+      ],
       include: [{ 
         model: Draw,
-        attributes: [] // Don't include Draw attributes since we don't need them
-      }]
-    });
+        as: 'Draw',
+        attributes: []
+      }],
+      group: ['Draw.price'],
+      raw: true
+    }).then(results => 
+      results.reduce((sum, row) => 
+        sum + (parseFloat(row.drawPrice) * parseInt(row.ticketCount)), 0)
+    );
 
     // Calculate growth rates
     const lastMonth = new Date();
@@ -42,6 +53,7 @@ exports.getStats = async (req, res) => {
     const usersWithTickets = await User.count({
       include: [{
         model: Ticket,
+        as: 'tickets',
         required: true,
       }],
     });
@@ -52,6 +64,7 @@ exports.getStats = async (req, res) => {
     const lastMonthUsersWithTickets = await User.count({
       include: [{
         model: Ticket,
+        as: 'tickets',
         required: true,
         where: {
           createdAt: {
@@ -88,8 +101,8 @@ exports.getStats = async (req, res) => {
         limit: 5,
         order: [['createdAt', 'DESC']],
         include: [
-          { model: User, attributes: ['name'] },
-          { model: Draw, attributes: ['title'] },
+          { model: User, as: 'User', attributes: ['name'] },
+          { model: Draw, as: 'Draw', attributes: ['title'] },
         ],
       }),
     ]);
@@ -111,6 +124,11 @@ exports.getStats = async (req, res) => {
       })),
     ].sort((a, b) => b.timestamp - a.timestamp);
 
+    // Add pending tickets count to stats
+    const pendingTickets = await Ticket.count({
+      where: { status: 'pending' }
+    });
+
     res.status(200).json({
       status: 'success',
       data: {
@@ -121,6 +139,7 @@ exports.getStats = async (req, res) => {
         drawGrowth,
         conversionRate,
         conversionRateChange,
+        pendingTickets,
         recentActivity: activity.slice(0, 5),
       },
     });
@@ -140,6 +159,7 @@ exports.getUsers = async (req, res) => {
       include: [
         {
           model: Ticket,
+          as: 'tickets',
           attributes: ['id'],
         },
       ],
@@ -224,6 +244,7 @@ exports.getDraws = async (req, res) => {
       include: [
         {
           model: Ticket,
+          as: 'tickets',
           attributes: ['id'],
         },
       ],
@@ -232,8 +253,8 @@ exports.getDraws = async (req, res) => {
 
     const formattedDraws = draws.map(draw => ({
       ...draw.toJSON(),
-      ticketCount: draw.Tickets.length,
-      Tickets: undefined
+      ticketCount: draw.tickets.length,
+      tickets: undefined
     }));
 
     res.status(200).json({
@@ -378,6 +399,40 @@ exports.deleteDraw = async (req, res) => {
     res.status(500).json({
       status: 'error',
       message: 'Error deleting draw',
+    });
+  }
+};
+
+exports.getPendingTickets = async (req, res) => {
+  try {
+    const pendingTickets = await Ticket.findAll({
+      where: { status: 'pending' },
+      include: [
+        {
+          model: Draw,
+          as: 'Draw',
+          attributes: ['id', 'title', 'prize', 'price'],
+        },
+        {
+          model: User,
+          as: 'User',
+          attributes: ['id', 'name', 'email'],
+        },
+      ],
+      order: [['purchaseDate', 'DESC']],
+    });
+
+    res.status(200).json({
+      status: 'success',
+      data: {
+        tickets: pendingTickets,
+      },
+    });
+  } catch (error) {
+    console.error('Error fetching pending tickets:', error);
+    res.status(500).json({
+      status: 'error',
+      message: 'Error fetching pending tickets',
     });
   }
 };

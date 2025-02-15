@@ -1,37 +1,42 @@
-const { User, Draw, Ticket } = require('../models');
-const { v4: uuidv4 } = require('uuid');
+const { User, Draw, Ticket } = require("../models");
+const { v4: uuidv4 } = require("uuid");
 
 exports.getMyTickets = async (req, res) => {
   try {
     const tickets = await Ticket.findAll({
-      where: { UserId: req.user.id },
+      where: { userId: req.user.id },
       include: [
         {
           model: Draw,
-          attributes: ['id', 'title', 'prize', 'endDate', 'status'],
+          as: "Draw",
+          attributes: ["id", "title", "prize", "endDate", "status", "price"],
         },
       ],
-      order: [['purchaseDate', 'DESC']],
+      order: [["purchaseDate", "DESC"]],
     });
 
     res.status(200).json({
-      status: 'success',
+      status: "success",
       data: {
-        tickets: tickets.map((ticket) => ({
-          id: ticket.id,
-          number: ticket.number,
-          status: ticket.status,
-          purchaseDate: ticket.purchaseDate,
-          price: ticket.price,
-          draw: ticket.Draw,
-        })),
+        tickets: tickets.map((ticket) => {
+          const plainTicket = ticket.get({ plain: true });
+          return {
+            ...plainTicket,
+            Draw: plainTicket.Draw
+              ? {
+                  ...plainTicket.Draw,
+                  price: parseFloat(plainTicket.Draw.price).toFixed(2),
+                }
+              : null,
+          };
+        }),
       },
     });
   } catch (error) {
-    console.error('Error fetching tickets:', error);
+    console.error("Error fetching tickets:", error);
     res.status(500).json({
-      status: 'error',
-      message: 'Error fetching tickets',
+      status: "error",
+      message: "Error fetching tickets",
     });
   }
 };
@@ -39,95 +44,123 @@ exports.getMyTickets = async (req, res) => {
 exports.purchaseTicket = async (req, res) => {
   try {
     const { drawId } = req.params;
+    const { paymentMethod } = req.body;
     const userId = req.user.id;
 
     // Find the draw
     const draw = await Draw.findByPk(drawId);
     if (!draw) {
       return res.status(404).json({
-        status: 'error',
-        message: 'Draw not found',
+        status: "error",
+        message: "Draw not found",
       });
     }
 
     // Check if draw is active
-    if (draw.status !== 'active') {
+    if (draw.status !== "active") {
       return res.status(400).json({
-        status: 'error',
-        message: 'Draw is not active',
-      });
-    }
-
-    // Check if draw has ended
-    if (new Date(draw.endDate) < new Date()) {
-      return res.status(400).json({
-        status: 'error',
-        message: 'Draw has ended',
-      });
-    }
-
-    // Check if user already has a ticket for this draw
-    const existingTicket = await Ticket.findOne({
-      where: {
-        UserId: userId,
-        DrawId: drawId,
-      },
-    });
-
-    if (existingTicket) {
-      return res.status(400).json({
-        status: 'error',
-        message: 'You already have a ticket for this draw',
+        status: "error",
+        message: "Draw is not active",
       });
     }
 
     // Check if draw has reached max tickets
-    const ticketCount = await Ticket.count({
-      where: { DrawId: drawId },
-    });
-
-    if (ticketCount >= draw.maxTickets) {
+    const ticketCount = await Ticket.count({ where: { drawId } });
+    if (draw.maxTickets && ticketCount >= draw.maxTickets) {
       return res.status(400).json({
-        status: 'error',
-        message: 'Draw is full',
+        status: "error",
+        message: "Draw has reached maximum number of tickets",
       });
     }
 
     // Generate unique ticket number
-    const ticketNumber = `${drawId.slice(0, 4)}-${uuidv4().slice(0, 8)}`.toUpperCase();
+    const ticketNumber = uuidv4().substring(0, 8).toUpperCase();
 
-    // Create ticket
+    // Create ticket with pending status
     const ticket = await Ticket.create({
       number: ticketNumber,
-      price: draw.price,
-      UserId: userId,
-      DrawId: drawId,
+      userId,
+      drawId,
+      status: "pending",
+      paymentStatus: "pending",
+      paymentMethod,
+      paymentReference: uuidv4(),
     });
 
     res.status(201).json({
-      status: 'success',
+      status: "success",
+      message: "Ticket subscription pending approval",
       data: {
         ticket: {
           id: ticket.id,
           number: ticket.number,
           status: ticket.status,
+          paymentStatus: ticket.paymentStatus,
+          paymentReference: ticket.paymentReference,
           purchaseDate: ticket.purchaseDate,
-          price: ticket.price,
-          draw: {
-            id: draw.id,
-            title: draw.title,
-            prize: draw.prize,
-            endDate: draw.endDate,
-            status: draw.status,
-          },
         },
       },
     });
   } catch (error) {
-    console.error('Error purchasing ticket:', error);
+    console.error("Error purchasing ticket:", error);
     res.status(500).json({
-      status: 'error',
-      message: 'Error purchasing ticket',
+      status: "error",
+      message: "Error purchasing ticket",
+    });
+  }
+};
+
+exports.updateTicketStatus = async (req, res) => {
+  try {
+    const { ticketId } = req.params;
+    const { status, adminNote } = req.body;
+
+    // Only admin can update ticket status
+    if (req.user.role !== "admin") {
+      return res.status(403).json({
+        status: "error",
+        message: "Unauthorized to perform this action",
+      });
+    }
+
+    const ticket = await Ticket.findByPk(ticketId, {
+      include: [{ model: Draw, as: "Draw" }],
+    });
+
+    if (!ticket) {
+      return res.status(404).json({
+        status: "error",
+        message: "Ticket not found",
+      });
+    }
+
+    // Update ticket status
+    if (status === "accepted") {
+      ticket.status = "active";
+      ticket.paymentStatus = "completed";
+    } else if (status === "declined") {
+      ticket.status = "declined";
+      ticket.paymentStatus = "failed";
+    }
+
+    if (adminNote) {
+      ticket.adminNote = adminNote;
+    }
+
+    await ticket.save();
+
+    res.status(200).json({
+      status: "success",
+      message: `Ticket ${status} successfully`,
+      data: {
+        ticket,
+      },
+    });
+  } catch (error) {
+    console.error("Error updating ticket status:", error);
+    res.status(500).json({
+      status: "error",
+      message: "Error updating ticket status",
     });
   }
 };
@@ -135,44 +168,47 @@ exports.purchaseTicket = async (req, res) => {
 exports.getTicketDetails = async (req, res) => {
   try {
     const { ticketId } = req.params;
-    const userId = req.user.id;
 
     const ticket = await Ticket.findOne({
-      where: { id: ticketId, UserId: userId },
+      where: { id: ticketId },
       include: [
         {
           model: Draw,
-          attributes: ['id', 'title', 'prize', 'endDate', 'status', 'winnerId'],
+          attributes: ["id", "title", "prize", "endDate", "status", "price"],
+        },
+        {
+          model: User,
+          attributes: ["id", "name", "email"],
         },
       ],
     });
 
     if (!ticket) {
       return res.status(404).json({
-        status: 'error',
-        message: 'Ticket not found',
+        status: "error",
+        message: "Ticket not found",
+      });
+    }
+
+    // Check if user is authorized to view ticket details
+    if (!req.user.isAdmin && ticket.userId !== req.user.id) {
+      return res.status(403).json({
+        status: "error",
+        message: "Unauthorized to view ticket details",
       });
     }
 
     res.status(200).json({
-      status: 'success',
+      status: "success",
       data: {
-        ticket: {
-          id: ticket.id,
-          number: ticket.number,
-          status: ticket.status,
-          purchaseDate: ticket.purchaseDate,
-          price: ticket.price,
-          draw: ticket.Draw,
-          isWinner: ticket.Draw.winnerId === userId,
-        },
+        ticket,
       },
     });
   } catch (error) {
-    console.error('Error fetching ticket details:', error);
+    console.error("Error fetching ticket details:", error);
     res.status(500).json({
-      status: 'error',
-      message: 'Error fetching ticket details',
+      status: "error",
+      message: "Error fetching ticket details",
     });
   }
 };

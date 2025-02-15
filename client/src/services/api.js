@@ -1,7 +1,7 @@
 import axios from "axios";
 
-const api = axios.create({
-  baseURL: "http://localhost:3000/api",
+export const api = axios.create({
+  baseURL: "http://192.168.0.100:3000/api",
 });
 
 // Add request interceptor for auth token
@@ -86,27 +86,30 @@ export const authService = {
 // Draws service
 export const drawsService = {
   getDraws: async () => {
+    // Use api for fetching draws
     const response = await api.get("/draws");
     return response.data;
   },
 
   getDraw: async (id) => {
+    // Use api for fetching a single draw
     const response = await api.get(`/draws/${id}`);
     return response.data;
   },
 
   enterDraw: async (drawId) => {
+    // Use authenticated api for entering draws
     const response = await api.post(`/draws/${drawId}/enter`);
     return response.data;
   },
 
   getMyTickets: async () => {
-    const response = await api.get("/draws/my/tickets");
+    const response = await api.get("/tickets/my-tickets");
     return response.data;
   },
 
   getTicketDetails: async (ticketId) => {
-    const response = await api.get(`/tickets/${ticketId}`);
+    const response = await api.get(`/tickets/tickets/${ticketId}`);
     return response.data;
   },
 
@@ -185,6 +188,25 @@ export const adminService = {
 
   deleteDraw: async (drawId) => {
     const response = await api.delete(`/admin/draws/${drawId}`);
+    return response.data;
+  },
+
+  uploadImage: async (formData) => {
+    const response = await api.post("/admin/upload-image", formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
+  },
+
+  getPendingTickets: async () => {
+    const response = await api.get('/admin/pending-tickets');
+    return response.data;
+  },
+
+  updateTicketStatus: async (ticketId, statusData) => {
+    const response = await api.patch(`/admin/tickets/${ticketId}/status`, statusData);
     return response.data;
   },
 };
