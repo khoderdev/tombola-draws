@@ -66,18 +66,12 @@ function App() {
             <Route
               path="/"
               element={
-                <RequireAuth>
-                  <Navigate to="/draws" replace />
-                </RequireAuth>
+                <Navigate to="/draws" replace />
               }
             />
             <Route
               path="/draws"
-              element={
-                <RequireAuth>
-                  <DrawList />
-                </RequireAuth>
-              }
+              element={<DrawList />}
             />
             <Route
               path="/tickets"

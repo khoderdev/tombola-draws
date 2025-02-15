@@ -52,4 +52,7 @@ router.post('/profile/avatar', upload.single('avatar'), profileController.upload
 // Get profile stats
 router.get('/profile/stats', profileController.getStats);
 
+// Get profile stats
+router.get('/profile/stats', profileController.getStats);
+
 module.exports = router;

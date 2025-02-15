@@ -3,7 +3,7 @@ const { Op } = require("sequelize");
 
 exports.getDraws = async (req, res) => {
   try {
-    const userId = req.user?.id;
+    // Get all active draws
     let draws = await Draw.findAll({
       where: {
         status: "active",
@@ -15,15 +15,14 @@ exports.getDraws = async (req, res) => {
       raw: true,
     });
 
-    if (userId) {
-      // Get all tickets for this user with their status
+    // If user is authenticated, add their ticket information
+    if (req.user) {
       const userTickets = await Ticket.findAll({
-        where: { userId: userId },
+        where: { userId: req.user.id },
         attributes: ['drawId', 'status', 'id'],
         raw: true,
       });
 
-      // Create a map of drawId to ticket info
       const userTicketMap = userTickets.reduce((map, ticket) => {
         map[ticket.drawId] = {
           status: ticket.status,
@@ -32,7 +31,6 @@ exports.getDraws = async (req, res) => {
         return map;
       }, {});
 
-      // Add ticket info to each draw
       draws = draws.map(draw => {
         const ticketInfo = userTicketMap[draw.id];
         return {
@@ -42,6 +40,14 @@ exports.getDraws = async (req, res) => {
           ticketId: ticketInfo ? ticketInfo.id : null,
         };
       });
+    } else {
+      // For unauthenticated users, set default values
+      draws = draws.map(draw => ({
+        ...draw,
+        hasEntered: false,
+        ticketStatus: null,
+        ticketId: null,
+      }));
     }
 
     res.status(200).json({

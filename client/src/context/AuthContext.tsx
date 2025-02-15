@@ -199,9 +199,11 @@ export const useAuth = () => {
 export function RequireAuth({
   children,
   allowedRoles = [],
+  requireAuth = false,
 }: {
   children: React.ReactNode;
   allowedRoles?: string[];
+  requireAuth?: boolean;
 }) {
   const { user, loading } = useAuth();
   const location = useLocation();
@@ -210,13 +212,39 @@ export function RequireAuth({
     return <div>Loading...</div>;
   }
 
-  if (!user) {
+  // If authentication is required and the user is not logged in, redirect to login
+  if (requireAuth && !user) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  if (allowedRoles.length > 0 && user.role && !allowedRoles.includes(user.role)) {
+  // If the user is logged in but doesn't have the required role, redirect to unauthorized
+  if (user && allowedRoles.length > 0 && user.role && !allowedRoles.includes(user.role)) {
     return <Navigate to="/unauthorized" replace />;
   }
 
   return children;
 }
+// export function RequireAuth({
+//   children,
+//   allowedRoles = [],
+// }: {
+//   children: React.ReactNode;
+//   allowedRoles?: string[];
+// }) {
+//   const { user, loading } = useAuth();
+//   const location = useLocation();
+
+//   if (loading) {
+//     return <div>Loading...</div>;
+//   }
+
+//   if (!user) {
+//     return <Navigate to="/login" state={{ from: location }} replace />;
+//   }
+
+//   if (allowedRoles.length > 0 && user.role && !allowedRoles.includes(user.role)) {
+//     return <Navigate to="/unauthorized" replace />;
+//   }
+
+//   return children;
+// }

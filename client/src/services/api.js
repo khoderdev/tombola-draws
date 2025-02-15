@@ -86,27 +86,30 @@ export const authService = {
 // Draws service
 export const drawsService = {
   getDraws: async () => {
+    // Use api for fetching draws
     const response = await api.get("/draws");
     return response.data;
   },
 
   getDraw: async (id) => {
+    // Use api for fetching a single draw
     const response = await api.get(`/draws/${id}`);
     return response.data;
   },
 
   enterDraw: async (drawId) => {
+    // Use authenticated api for entering draws
     const response = await api.post(`/draws/${drawId}/enter`);
     return response.data;
   },
 
   getMyTickets: async () => {
-    const response = await api.get("/draws/my/tickets");
+    const response = await api.get("/tickets/my-tickets");
     return response.data;
   },
 
   getTicketDetails: async (ticketId) => {
-    const response = await api.get(`/tickets/${ticketId}`);
+    const response = await api.get(`/tickets/tickets/${ticketId}`);
     return response.data;
   },
 
@@ -119,29 +122,29 @@ export const drawsService = {
 // Profile service
 export const profileService = {
   getProfile: async () => {
-    const response = await api.get('/profile');
+    const response = await api.get('/profile/profile');
     return response.data;
   },
 
   updateProfile: async (data) => {
-    const response = await api.put('/profile', data);
+    const response = await api.put('/profile/profile', data);
     return response.data;
   },
 
   changePassword: async (data) => {
-    const response = await api.post('/profile/change-password', data);
+    const response = await api.post('/profile/profile/change-password', data);
     return response.data;
   },
 
   uploadAvatar: async (formData) => {
-    const response = await api.post('/profile/avatar', formData, {
+    const response = await api.post('/profile/profile/avatar', formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
     return response.data;
   },
 
   getStats: async () => {
-    const response = await api.get('/profile/stats');
+    const response = await api.get('/profile/profile/stats');
     return response.data;
   },
 };

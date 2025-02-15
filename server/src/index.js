@@ -22,9 +22,9 @@ app.use(morgan('dev'));
 
 // Routes
 app.use('/api/auth', authRoutes);
-app.use('/api', ticketRoutes); 
-app.use('/api', profileRoutes);
 app.use('/api/draws', drawRoutes);
+app.use('/api/tickets', ticketRoutes);
+app.use('/api/profile', profileRoutes);
 app.use('/api/admin', adminRoutes);
 
 // Error handling middleware
