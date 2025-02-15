@@ -70,10 +70,10 @@ export default function Navbar() {
       className="fixed top-0 left-0 right-0 z-40 bg-neutral-100/75 dark:bg-neutral-900/75 backdrop-blur-md"
     >
       <div className=" px-4 sm:px-6 lg:px-8 shadow dark:shadow-neutral-800 sticky top-0 z-40 w-full">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex max-w-7xl items-center justify-between h-16 mx-auto">
           {/* Logo */}
           <div className="flex items-center">
-            <Link to="/" className="font-bold text-3xl">
+            <Link to="/" className="font-bold text-4xl">
               Tombola
             </Link>
           </div>
