@@ -45,34 +45,34 @@ export default function AdminDraws() {
 
   const handleInputChange = (e) => {
     const { name, value, type, files } = e.target;
-    
-    if (type === 'file' && files[0]) {
+
+    if (type === "file" && files[0]) {
       const file = files[0];
       // Check if file is an image
-      if (!file.type.startsWith('image/')) {
-        setError('Please upload an image file');
+      if (!file.type.startsWith("image/")) {
+        setError("Please upload an image file");
         return;
       }
-      
+
       // Create preview URL
       const previewUrl = URL.createObjectURL(file);
       setImagePreview(previewUrl);
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
         imageFile: file,
-        image: '' // Clear URL when file is selected
+        image: "", // Clear URL when file is selected
       }));
-    } else if (name === 'image' && type === 'url') {
-      setFormData(prev => ({
+    } else if (name === "image" && type === "url") {
+      setFormData((prev) => ({
         ...prev,
         image: value,
-        imageFile: null // Clear file when URL is entered
+        imageFile: null, // Clear file when URL is entered
       }));
       setImagePreview(value);
     } else {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
-        [name]: type === 'checkbox' ? e.target.checked : value
+        [name]: type === "checkbox" ? e.target.checked : value,
       }));
     }
   };
@@ -86,7 +86,7 @@ export default function AdminDraws() {
       // If there's a file to upload, handle it first
       if (formData.imageFile) {
         const formDataWithFile = new FormData();
-        formDataWithFile.append('image', formData.imageFile);
+        formDataWithFile.append("image", formData.imageFile);
         const uploadResponse = await adminService.uploadImage(formDataWithFile);
         imageUrl = uploadResponse.data.imageUrl;
       }
@@ -102,7 +102,7 @@ export default function AdminDraws() {
       } else {
         await adminService.createDraw(drawData);
       }
-      
+
       setIsModalOpen(false);
       setSelectedDraw(null);
       setFormData({
@@ -161,13 +161,11 @@ export default function AdminDraws() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
       <div className="sm:flex sm:items-center">
         <div className="sm:flex-auto">
           <h1 className="text-2xl font-semibold ">Draws</h1>
-          <p className="mt-2 text-sm text-gray-700">
-            A list of all draws in the system.
-          </p>
+          <p className="mt-2 text-sm">A list of all draws in the system.</p>
         </div>
         <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
           <button
@@ -198,58 +196,79 @@ export default function AdminDraws() {
         </div>
       )}
 
-      <div className="mt-8 flex flex-col">
+      <div className="mt-4 flex flex-col">
         <div className="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
             <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
               {draws.length > 0 ? (
                 <table className="min-w-full divide-y divide-gray-300">
-                  <thead className="bg-gray-50">
+                  <thead className="bg-gray-50 dark:bg-neutral-700">
                     <tr>
-                      <th className="px-3 py-3.5 text-left text-sm font-semibold ">
+                      <th
+                        scope="col"
+                        className="px-4 py-3 text-left text-sm font-semibold text-gray-900 dark:text-gray-100"
+                      >
                         Title
                       </th>
-                      <th className="px-3 py-3.5 text-left text-sm font-semibold ">
+                      <th
+                        scope="col"
+                        className="px-4 py-3 text-left text-sm font-semibold text-gray-900 dark:text-gray-100"
+                      >
                         Prize
                       </th>
-                      <th className="px-3 py-3.5 text-left text-sm font-semibold ">
+                      <th
+                        scope="col"
+                        className="px-4 py-3 text-left text-sm font-semibold text-gray-900 dark:text-gray-100"
+                      >
                         Price
                       </th>
-                      <th className="px-3 py-3.5 text-left text-sm font-semibold ">
+                      <th
+                        scope="col"
+                        className="px-4 py-3 text-left text-sm font-semibold text-gray-900 dark:text-gray-100"
+                      >
                         Start Date
                       </th>
-                      <th className="px-3 py-3.5 text-left text-sm font-semibold ">
+                      <th
+                        scope="col"
+                        className="px-4 py-3 text-left text-sm font-semibold text-gray-900 dark:text-gray-100"
+                      >
                         End Date
                       </th>
-                      <th className="px-3 py-3.5 text-left text-sm font-semibold ">
+                      <th
+                        scope="col"
+                        className="px-4 py-3 text-left text-sm font-semibold text-gray-900 dark:text-gray-100"
+                      >
                         Status
                       </th>
-                      <th className="relative py-3.5 pl-3 pr-4 sm:pr-6">
+                      <th scope="col" className="relative px-4 py-3">
                         <span className="sr-only">Actions</span>
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-200 bg-white">
+                  <tbody className="divide-y divide-gray-200 bg-white dark:bg-neutral-800">
                     {draws.map((draw) => (
-                      <tr key={draw.id}>
-                        <td className="whitespace-nowrap px-3 py-4 text-sm text-neutral-500">
+                      <tr
+                        key={draw.id}
+                        className="hover:bg-gray-50 dark:hover:bg-neutral-700 transition-colors"
+                      >
+                        <td className="whitespace-nowrap px-4 py-4 text-sm text-gray-900 dark:text-gray-100">
                           {draw.title}
                         </td>
-                        <td className="whitespace-nowrap px-3 py-4 text-sm text-neutral-500">
+                        <td className="whitespace-nowrap px-4 py-4 text-sm text-gray-900 dark:text-gray-100">
                           {draw.prize}
                         </td>
-                        <td className="whitespace-nowrap px-3 py-4 text-sm text-neutral-500">
+                        <td className="whitespace-nowrap px-4 py-4 text-sm text-gray-900 dark:text-gray-100">
                           ${draw.price}
                         </td>
-                        <td className="whitespace-nowrap px-3 py-4 text-sm text-neutral-500">
+                        <td className="whitespace-nowrap px-4 py-4 text-sm text-gray-900 dark:text-gray-100">
                           {format(new Date(draw.startDate), "PPp")}
                         </td>
-                        <td className="whitespace-nowrap px-3 py-4 text-sm text-neutral-500">
+                        <td className="whitespace-nowrap px-4 py-4 text-sm text-gray-900 dark:text-gray-100">
                           {format(new Date(draw.endDate), "PPp")}
                         </td>
-                        <td className="whitespace-nowrap px-3 py-4 text-sm text-neutral-500">
+                        <td className="whitespace-nowrap px-4 py-4 text-sm">
                           <span
-                            className={`inline-flex rounded-full px-2 text-xs font-semibold leading-5 ${
+                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                               draw.status === "active"
                                 ? "bg-green-100 text-green-800"
                                 : draw.status === "completed"
@@ -260,16 +279,16 @@ export default function AdminDraws() {
                             {draw.status}
                           </span>
                         </td>
-                        <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
+                        <td className="whitespace-nowrap px-4 py-4 text-right text-sm font-medium">
                           <button
                             onClick={() => handleEdit(draw)}
-                            className="text-blue-600 hover:text-blue-900 mr-4"
+                            className="text-blue-600 hover:text-blue-900 dark:hover:text-blue-400 mr-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
                           >
                             Edit
                           </button>
                           <button
                             onClick={() => handleDelete(draw.id)}
-                            className="text-red-500 hover:text-red-900"
+                            className="text-red-500 hover:text-red-900 dark:hover:text-red-400 focus:outline-none focus:ring-2 focus:ring-red-500"
                           >
                             Delete
                           </button>
@@ -294,10 +313,10 @@ export default function AdminDraws() {
                       d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"
                     />
                   </svg>
-                  <h3 className="mt-2 text-sm font-medium ">
+                  <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-gray-100">
                     No draws
                   </h3>
-                  <p className="mt-1 text-sm text-neutral-500">
+                  <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
                     Get started by creating a new draw.
                   </p>
                   <div className="mt-6">
@@ -344,87 +363,78 @@ export default function AdminDraws() {
 
       {/* Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-neutral-500 bg-opacity-75 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg max-w-lg w-full p-6">
+        <div className="fixed inset-0 bg-neutral-500 bg-opacity-75 flex items-center justify-center p-4 z-50">
+          <div className="bg-white dark:bg-neutral-800 rounded-lg max-w-xl w-full p-6">
             <h2 className="text-lg font-medium mb-4">
               {selectedDraw ? "Edit Draw" : "Create Draw"}
             </h2>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Title
-                </label>
+                <label className="block text-sm font-medium">Title</label>
                 <input
                   type="text"
                   name="title"
                   value={formData.title}
                   onChange={handleInputChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                  className="mt-2 block w-full px-4 py-2 border border-neutral-300 dark:border-neutral-600 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 outline-none focus:border-blue-500 transition duration-200 dark:bg-neutral-700 dark:text-white"
                   required
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Prize
-                </label>
+                <label className="block text-sm font-medium">Prize</label>
                 <input
                   type="text"
                   name="prize"
                   value={formData.prize}
                   onChange={handleInputChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                  className="mt-2 block w-full px-4 py-2 border border-neutral-300 dark:border-neutral-600 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 outline-none focus:border-blue-500 transition duration-200 dark:bg-neutral-700 dark:text-white"
                   required
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Price
-                </label>
+                <label className="block text-sm font-medium">Price</label>
                 <input
                   type="number"
                   name="price"
                   value={formData.price}
                   onChange={handleInputChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                  className="mt-2 block w-full px-4 py-2 border border-neutral-300 dark:border-neutral-600 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 outline-none focus:border-blue-500 transition duration-200 dark:bg-neutral-700 dark:text-white"
                   required
                   min="0"
                   step="0.01"
                 />
               </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
+
+              <div className="w-full flex flex-col sm:flex-row items-center justify-between space-y-4 sm:space-x-2">
+                <label className="w-full flex flex-col text-sm font-medium">
                   Start Date
+                  <input
+                    type="datetime-local"
+                    name="startDate"
+                    value={formData.startDate}
+                    onChange={handleInputChange}
+                    className="mt-2  px-2 py-2 border border-neutral-300 dark:border-neutral-600 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 outline-none focus:border-blue-500 transition duration-200 dark:bg-neutral-700 dark:text-white"
+                    required
+                  />
                 </label>
-                <input
-                  type="datetime-local"
-                  name="startDate"
-                  value={formData.startDate}
-                  onChange={handleInputChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="w-full flex flex-col text-sm font-medium">
                   End Date
+                  <input
+                    type="datetime-local"
+                    name="endDate"
+                    value={formData.endDate}
+                    onChange={handleInputChange}
+                    className="mt-2  px-2 py-2 border border-neutral-300 dark:border-neutral-600 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 outline-none focus:border-blue-500 transition duration-200 dark:bg-neutral-700 dark:text-white"
+                    required
+                  />
                 </label>
-                <input
-                  type="datetime-local"
-                  name="endDate"
-                  value={formData.endDate}
-                  onChange={handleInputChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                  required
-                />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Image
-                </label>
+                <label className="block text-sm font-medium">Image</label>
                 <div className="mt-1 flex flex-col space-y-4">
                   {/* URL input */}
                   <div>
-                    <label className="block text-sm text-neutral-500 mb-1">
+                    <label className="block text-sm mb-1">
                       Option 1: Enter Image URL
                     </label>
                     <input
@@ -433,13 +443,13 @@ export default function AdminDraws() {
                       value={formData.image}
                       onChange={handleInputChange}
                       placeholder="Enter image URL"
-                      className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                      className="mt-2 block w-full px-4 py-2 border border-neutral-300 dark:border-neutral-600 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 outline-none focus:border-blue-500 transition duration-200 dark:bg-neutral-700 dark:text-white"
                     />
                   </div>
-                  
+
                   {/* File upload */}
                   <div>
-                    <label className="block text-sm text-neutral-500 mb-1">
+                    <label className="block text-sm  mb-1">
                       Option 2: Upload Image File
                     </label>
                     <input
@@ -447,7 +457,7 @@ export default function AdminDraws() {
                       name="imageFile"
                       accept="image/*"
                       onChange={handleInputChange}
-                      className="block w-full text-sm text-neutral-500
+                      className="block w-full text-sm 
                         file:mr-4 file:py-2 file:px-4
                         file:rounded-md file:border-0
                         file:text-sm file:font-semibold
@@ -459,9 +469,7 @@ export default function AdminDraws() {
                   {/* Image Preview */}
                   {imagePreview && (
                     <div className="mt-2">
-                      <label className="block text-sm text-neutral-500 mb-1">
-                        Preview
-                      </label>
+                      <label className="block text-sm  mb-1">Preview</label>
                       <div className="relative w-full h-48">
                         <img
                           src={imagePreview}
@@ -473,10 +481,10 @@ export default function AdminDraws() {
                           type="button"
                           onClick={() => {
                             setImagePreview("");
-                            setFormData(prev => ({
+                            setFormData((prev) => ({
                               ...prev,
                               image: "",
-                              imageFile: null
+                              imageFile: null,
                             }));
                           }}
                           className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
@@ -512,9 +520,7 @@ export default function AdminDraws() {
                   }}
                   className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                 />
-                <label className="ml-2 block text-sm font-medium text-gray-700">
-                  Active
-                </label>
+                <label className="ml-2 block text-sm font-medium">Active</label>
               </div>
               <div className="mt-5 sm:mt-6 sm:grid sm:grid-cols-2 sm:gap-3">
                 <button
@@ -527,7 +533,7 @@ export default function AdminDraws() {
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:mt-0 sm:text-sm"
+                  className="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300  px-4 py-2 text-base font-medium shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:mt-0 sm:text-sm"
                 >
                   Cancel
                 </button>

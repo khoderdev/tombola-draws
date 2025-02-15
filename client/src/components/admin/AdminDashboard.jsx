@@ -46,7 +46,10 @@ export default function AdminDashboard() {
 
   const handleTicketStatusUpdate = async (ticketId, status, note) => {
     try {
-      await adminService.updateTicketStatus(ticketId, { status, adminNote: note });
+      await adminService.updateTicketStatus(ticketId, {
+        status,
+        adminNote: note,
+      });
       // Refresh pending tickets
       fetchPendingTickets();
       // Refresh stats if we're showing them
@@ -76,7 +79,7 @@ export default function AdminDashboard() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Tabs */}
-      <div className="border-b border-neutral-200 mb-8">
+      <div className="border-b border-neutral-200 mb-4">
         <nav className="-mb-px flex space-x-8">
           {tabs.map((tab) => (
             <button

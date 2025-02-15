@@ -29,8 +29,8 @@ export default function Profile() {
   };
 
   const tabs = [
-    { id: "info", name: "Profile Information" },
     { id: "stats", name: "Statistics" },
+    { id: "info", name: "Profile Information" },
     { id: "security", name: "Security Settings" },
   ];
 
