@@ -93,7 +93,7 @@ export default function AdminDashboard() {
                 className={`${
                   activeTab === tab.id
                     ? "border-blue-500 text-blue-600"
-                    : "border-transparent text-neutral-500 hover:border-neutral-300"
+                    : "border-transparent text-neutral-500 hover:border-neutral-300 dark:text-neutral-100 dark:hover:border-neutral-500"
                 } whitespace-nowrap py-4 px-6 border-b-2 font-medium flex-shrink-0 flex items-center`}
               >
                 {tab.name}

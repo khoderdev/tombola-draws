@@ -87,29 +87,29 @@ export default function AdminUsers() {
         <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
           <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
             <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+              <thead className="bg-gray-50 dark:bg-neutral-700">
                 <tr>
                   <th
                     scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider"
+                    className="px-6 py-3 text-left text-xs font-medium text-neutral-800 dark:text-gray-100 uppercase tracking-wider"
                   >
                     User
                   </th>
                   <th
                     scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider"
+                    className="px-6 py-3 text-left text-xs font-medium text-neutral-800 dark:text-gray-100 uppercase tracking-wider"
                   >
                     Role
                   </th>
                   <th
                     scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider"
+                    className="px-6 py-3 text-left text-xs font-medium text-neutral-800 dark:text-gray-100 uppercase tracking-wider"
                   >
                     Status
                   </th>
                   <th
                     scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider"
+                    className="px-6 py-3 text-left text-xs font-medium text-neutral-800 dark:text-gray-100 uppercase tracking-wider"
                   >
                     Joined
                   </th>
@@ -118,7 +118,7 @@ export default function AdminUsers() {
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="divide-y divide-gray-200 bg-white dark:bg-neutral-800">
                 {users.map((user) => (
                   <tr key={user.id}>
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -134,7 +134,7 @@ export default function AdminUsers() {
                           <div className="text-sm font-medium ">
                             {user.name}
                           </div>
-                          <div className="text-sm text-neutral-500">
+                          <div className="text-sm text-neutral-800 dark:text-gray-100">
                             {user.email}
                           </div>
                         </div>
@@ -178,7 +178,7 @@ export default function AdminUsers() {
                         {user.status}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-500">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-800 dark:text-gray-100">
                       {new Date(user.createdAt).toLocaleDateString()}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">

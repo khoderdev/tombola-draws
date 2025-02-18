@@ -206,37 +206,37 @@ export default function AdminDraws() {
                     <tr>
                       <th
                         scope="col"
-                        className="px-4 py-3 text-left text-sm font-semibold text-gray-900 dark:text-gray-100"
+                        className="px-4 py-3 text-left text-sm font-semibold text-neutral-800 dark:text-gray-100"
                       >
                         Title
                       </th>
                       <th
                         scope="col"
-                        className="px-4 py-3 text-left text-sm font-semibold text-gray-900 dark:text-gray-100"
+                        className="px-4 py-3 text-left text-sm font-semibold text-neutral-800 dark:text-gray-100"
                       >
                         Prize
                       </th>
                       <th
                         scope="col"
-                        className="px-4 py-3 text-left text-sm font-semibold text-gray-900 dark:text-gray-100"
+                        className="px-4 py-3 text-left text-sm font-semibold text-neutral-800 dark:text-gray-100"
                       >
                         Price
                       </th>
                       <th
                         scope="col"
-                        className="px-4 py-3 text-left text-sm font-semibold text-gray-900 dark:text-gray-100"
+                        className="px-4 py-3 text-left text-sm font-semibold text-neutral-800 dark:text-gray-100"
                       >
                         Start Date
                       </th>
                       <th
                         scope="col"
-                        className="px-4 py-3 text-left text-sm font-semibold text-gray-900 dark:text-gray-100"
+                        className="px-4 py-3 text-left text-sm font-semibold text-neutral-800 dark:text-gray-100"
                       >
                         End Date
                       </th>
                       <th
                         scope="col"
-                        className="px-4 py-3 text-left text-sm font-semibold text-gray-900 dark:text-gray-100"
+                        className="px-4 py-3 text-left text-sm font-semibold text-neutral-800 dark:text-gray-100"
                       >
                         Status
                       </th>
@@ -251,19 +251,19 @@ export default function AdminDraws() {
                         key={draw.id}
                         className="hover:bg-gray-50 dark:hover:bg-neutral-700 transition-colors"
                       >
-                        <td className="whitespace-nowrap px-4 py-4 text-sm text-gray-900 dark:text-gray-100">
+                        <td className="whitespace-nowrap px-4 py-4 text-sm text-neutral-800 dark:text-gray-100">
                           {draw.title}
                         </td>
-                        <td className="whitespace-nowrap px-4 py-4 text-sm text-gray-900 dark:text-gray-100">
+                        <td className="whitespace-nowrap px-4 py-4 text-sm text-neutral-800 dark:text-gray-100">
                           {draw.prize}
                         </td>
-                        <td className="whitespace-nowrap px-4 py-4 text-sm text-gray-900 dark:text-gray-100">
+                        <td className="whitespace-nowrap px-4 py-4 text-sm text-neutral-800 dark:text-gray-100">
                           ${draw.price}
                         </td>
-                        <td className="whitespace-nowrap px-4 py-4 text-sm text-gray-900 dark:text-gray-100">
+                        <td className="whitespace-nowrap px-4 py-4 text-sm text-neutral-800 dark:text-gray-100">
                           {format(new Date(draw.startDate), "PPp")}
                         </td>
-                        <td className="whitespace-nowrap px-4 py-4 text-sm text-gray-900 dark:text-gray-100">
+                        <td className="whitespace-nowrap px-4 py-4 text-sm text-neutral-800 dark:text-gray-100">
                           {format(new Date(draw.endDate), "PPp")}
                         </td>
                         <td className="whitespace-nowrap px-4 py-4 text-sm">
@@ -313,7 +313,7 @@ export default function AdminDraws() {
                       d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"
                     />
                   </svg>
-                  <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-gray-100">
+                  <h3 className="mt-2 text-sm font-medium text-neutral-800 dark:text-gray-100">
                     No draws
                   </h3>
                   <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
