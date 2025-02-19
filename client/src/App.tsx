@@ -56,6 +56,8 @@ function useLenis(): void {
 }
 
 function App() {
+  useLenis();
+  
   return (
     <Router>
       <AuthProvider>
