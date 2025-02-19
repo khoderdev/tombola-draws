@@ -23,16 +23,16 @@ function Menu({ menuOpen, setMenuOpen }: MenuProps) {
     if (menuOpen) {
       // Store the current scroll position
       const scrollY = window.scrollY;
-      document.body.style.position = 'fixed';
+      document.body.style.position = "fixed";
       document.body.style.top = `-${scrollY}px`;
-      document.body.style.width = '100%';
+      document.body.style.width = "100%";
     } else {
       // Restore the scroll position
       const scrollY = document.body.style.top;
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.width = '';
-      window.scrollTo(0, parseInt(scrollY || '0') * -1);
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.width = "";
+      window.scrollTo(0, parseInt(scrollY || "0") * -1);
     }
   }, [menuOpen]);
 
@@ -53,7 +53,7 @@ function Menu({ menuOpen, setMenuOpen }: MenuProps) {
           }}
           className="fixed top-0 left-0 w-full h-screen bg-white dark:bg-neutral-950 flex flex-col items-center justify-center z-50"
         >
-          <div className="relative w-full md:w-1/2 h-full flex flex-col justify-center items-center mx-auto">
+          <div className="relative w-full 2xl:w-[70%] h-full flex flex-col justify-center items-center mx-auto">
             {/* Close Button */}
             <motion.div
               initial={{ opacity: 0 }}
