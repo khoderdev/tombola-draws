@@ -16,7 +16,8 @@ import MyTickets from "./components/tickets/MyTickets";
 import Profile from "./components/profile/Profile";
 import AdminDashboard from "./components/admin/AdminDashboard";
 import Terms from './components/Terms';
-
+import ContactUs from './components/pages/ContactUs';
+import Privacy from './components/pages/Privacy';
 
 // Define Lenis options interface
 interface LenisOptions {
@@ -64,6 +65,8 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/terms" element={<Terms />} />
+            <Route path="/contact" element={<ContactUs />} />
+            <Route path="/privacy" element={<Privacy />} />
 
             {/* Protected routes */}
             <Route

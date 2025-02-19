@@ -15,9 +15,22 @@ export default function AdminUsers() {
     try {
       setLoading(true);
       const response = await adminService.getUsers();
-      setUsers(response.data);
+      console.log('Users response:', response.data);
+      
+      if (!response.data?.data?.users) {
+        throw new Error('Invalid response format: users array not found');
+      }
+      
+      setUsers(response.data.data.users);
+      setError(''); // Clear any previous errors
     } catch (err) {
-      setError('Failed to load users');
+      console.error('Error fetching users:', {
+        message: err.message,
+        response: err.response?.data,
+        stack: err.stack
+      });
+      setError(err.response?.data?.message || err.message || 'Failed to load users');
+      setUsers([]); // Reset users on error
     } finally {
       setLoading(false);
     }

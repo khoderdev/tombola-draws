@@ -64,6 +64,22 @@ export default function Footer() {
                   support@tomboladraws.com
                 </a>
               </li>
+              <li>
+                <Link
+                  to="/contact"
+                  className="text-base text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white"
+                >
+                  Contact Us
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/privacy"
+                  className="text-base text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white"
+                >
+                  Privacy Policy
+                </Link>
+              </li>
             </ul>
           </div>
         </div>

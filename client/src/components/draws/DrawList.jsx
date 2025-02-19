@@ -87,8 +87,8 @@ export default function DrawList() {
 				};
 			case 'active':
 				return {
-					text: 'Subscribed',
-					className: 'bg-green-500 text-white select-none cursor-not-allowed',
+					text: 'SUBSCRIBED',
+					className: 'bg-green-500 text-white !text-lg !px-4 select-none cursor-not-allowed',
 				};
 			case 'declined':
 				return {
