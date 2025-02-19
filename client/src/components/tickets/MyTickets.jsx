@@ -88,7 +88,7 @@ export default function MyTickets() {
               <div className="p-6">
                 <div className="flex justify-between items-start">
                   <div>
-                    <h3 className="text-xl font-semibold text-neutral-900 dark:text-white">
+                    <h3 className="text-xl font-extrabold text-neutral-900 dark:text-white">
                       {ticket.Draw?.title || 'Unknown Draw'}
                     </h3>
                     <div className="mt-1 space-y-1">

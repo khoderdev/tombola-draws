@@ -130,7 +130,7 @@ export default function ProfileStats() {
                     <dt className="text-sm font-medium truncate">
                       {stat.title}
                     </dt>
-                    <dd className="text-lg font-semibold ">{stat.value}</dd>
+                    <dd className="text-lg font-extrabold ">{stat.value}</dd>
                   </dl>
                 </div>
               </div>

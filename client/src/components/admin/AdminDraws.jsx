@@ -164,7 +164,7 @@ export default function AdminDraws() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
       <div className="sm:flex sm:items-center">
         <div className="sm:flex-auto">
-          <h1 className="text-2xl font-semibold ">Draws</h1>
+          <h1 className="text-2xl font-extrabold ">Draws</h1>
           <p className="mt-2 text-sm">A list of all draws in the system.</p>
         </div>
         <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
@@ -206,37 +206,37 @@ export default function AdminDraws() {
                     <tr>
                       <th
                         scope="col"
-                        className="px-4 py-3 text-left text-sm font-semibold text-neutral-800 dark:text-gray-100"
+                        className="px-4 py-3 text-left text-sm font-extrabold text-neutral-800 dark:text-gray-100"
                       >
                         Title
                       </th>
                       <th
                         scope="col"
-                        className="px-4 py-3 text-left text-sm font-semibold text-neutral-800 dark:text-gray-100"
+                        className="px-4 py-3 text-left text-sm font-extrabold text-neutral-800 dark:text-gray-100"
                       >
                         Prize
                       </th>
                       <th
                         scope="col"
-                        className="px-4 py-3 text-left text-sm font-semibold text-neutral-800 dark:text-gray-100"
+                        className="px-4 py-3 text-left text-sm font-extrabold text-neutral-800 dark:text-gray-100"
                       >
                         Price
                       </th>
                       <th
                         scope="col"
-                        className="px-4 py-3 text-left text-sm font-semibold text-neutral-800 dark:text-gray-100"
+                        className="px-4 py-3 text-left text-sm font-extrabold text-neutral-800 dark:text-gray-100"
                       >
                         Start Date
                       </th>
                       <th
                         scope="col"
-                        className="px-4 py-3 text-left text-sm font-semibold text-neutral-800 dark:text-gray-100"
+                        className="px-4 py-3 text-left text-sm font-extrabold text-neutral-800 dark:text-gray-100"
                       >
                         End Date
                       </th>
                       <th
                         scope="col"
-                        className="px-4 py-3 text-left text-sm font-semibold text-neutral-800 dark:text-gray-100"
+                        className="px-4 py-3 text-left text-sm font-extrabold text-neutral-800 dark:text-gray-100"
                       >
                         Status
                       </th>
@@ -460,7 +460,7 @@ export default function AdminDraws() {
                       className="block w-full text-sm 
                         file:mr-4 file:py-2 file:px-4
                         file:rounded-md file:border-0
-                        file:text-sm file:font-semibold
+                        file:text-sm file:font-extrabold
                         file:bg-red-50 file:text-red-700
                         hover:file:bg-red-100"
                     />

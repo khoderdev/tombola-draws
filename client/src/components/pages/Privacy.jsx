@@ -38,7 +38,7 @@
 //           {/* Contact Information */}
 //           <div className="lg:col-span-1">
 //             <div className="bg-white dark:bg-neutral-800 rounded-lg shadow-lg p-8">
-//               <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-8">
+//               <h2 className="text-2xl font-extrabold text-gray-900 dark:text-white mb-8">
 //                 Contact Information
 //               </h2>
 //               <div className="space-y-6">
@@ -89,7 +89,7 @@
 //           {/* Contact Form */}
 //           <div className="lg:col-span-2">
 //             <div className="bg-white dark:bg-neutral-800 rounded-lg shadow-lg p-8">
-//               <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-8">
+//               <h2 className="text-2xl font-extrabold text-gray-900 dark:text-white mb-8">
 //                 Send us a Message
 //               </h2>
 //               {status.message && (
@@ -189,7 +189,7 @@ export default function PrivacyPolicy() {
             </p>
 
             <section className="mb-8">
-              <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
+              <h2 className="text-2xl font-extrabold text-gray-900 dark:text-white mb-4">
                 1. Introduction
               </h2>
               <p className="text-gray-600 dark:text-gray-300">
@@ -202,7 +202,7 @@ export default function PrivacyPolicy() {
             </section>
 
             <section className="mb-8">
-              <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
+              <h2 className="text-2xl font-extrabold text-gray-900 dark:text-white mb-4">
                 2. Data We Collect
               </h2>
               <p className="text-gray-600 dark:text-gray-300 mb-4">
@@ -225,7 +225,7 @@ export default function PrivacyPolicy() {
             </section>
 
             <section className="mb-8">
-              <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
+              <h2 className="text-2xl font-extrabold text-gray-900 dark:text-white mb-4">
                 3. How We Use Your Data
               </h2>
               <p className="text-gray-600 dark:text-gray-300 mb-4">
@@ -245,7 +245,7 @@ export default function PrivacyPolicy() {
             </section>
 
             <section className="mb-8">
-              <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
+              <h2 className="text-2xl font-extrabold text-gray-900 dark:text-white mb-4">
                 4. Data Security
               </h2>
               <p className="text-gray-600 dark:text-gray-300">
@@ -259,7 +259,7 @@ export default function PrivacyPolicy() {
             </section>
 
             <section className="mb-8">
-              <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
+              <h2 className="text-2xl font-extrabold text-gray-900 dark:text-white mb-4">
                 5. Your Legal Rights
               </h2>
               <p className="text-gray-600 dark:text-gray-300 mb-4">
@@ -279,7 +279,7 @@ export default function PrivacyPolicy() {
             </section>
 
             <section className="mb-8">
-              <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
+              <h2 className="text-2xl font-extrabold text-gray-900 dark:text-white mb-4">
                 6. Contact Us
               </h2>
               <p className="text-gray-600 dark:text-gray-300">

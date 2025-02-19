@@ -64,7 +64,7 @@ export default function ProfileInfo({ profile, onUpdate }) {
 
 	return (
 		<div className='max-w-2xl p-6 bg-white dark:bg-neutral-800 rounded-2xl'>
-			<h2 className='text-2xl font-semibold text-neutral-900 dark:text-neutral-100 mb-4'>
+			<h2 className='text-2xl font-extrabold text-neutral-900 dark:text-neutral-100 mb-4'>
 				Profile Information
 			</h2>
 			<div className='flex items-center space-x-4'>

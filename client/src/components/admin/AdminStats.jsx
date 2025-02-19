@@ -136,14 +136,14 @@ export default function AdminStats({ stats }) {
                 </p>
               </dt>
               <dd className="ml-16 flex items-baseline">
-                <p className="text-2xl font-semibold text-neutral-900 dark:text-white">
+                <p className="text-2xl font-extrabold text-neutral-900 dark:text-white">
                   {card.prefix}
                   {card.value}
                   {card.suffix}
                 </p>
                 {card.change !== undefined && (
                   <p
-                    className={`ml-2 flex items-baseline text-sm font-semibold ${
+                    className={`ml-2 flex items-baseline text-sm font-extrabold ${
                       card.changeType === "increase"
                         ? "text-green-600"
                         : "text-red-600"

@@ -152,14 +152,14 @@ export default function DrawList() {
 							)}
 							<div className='p-6'>
 								<div className='flex justify-between items-start mb-4'>
-									<h3 className='text-xl font-semibold'>{draw.title}</h3>
-									<span className='px-2 py-1 text-xs font-semibold rounded-full select-none bg-green-100 text-green-800'>
+									<h3 className='text-xl font-extrabold'>{draw.title}</h3>
+									<span className='px-2 py-1 text-xs font-extrabold rounded-full select-none bg-green-100 text-green-800'>
 										Active
 									</span>
 								</div>
 								<p className='text-neutral-500 mb-4'>{draw.prize}</p>
 								<div className='flex justify-between items-center'>
-									<div className='text-lg font-semibold'>${draw.price}</div>
+									<div className='text-lg font-extrabold'>${draw.price}</div>
 									{draw.hasEntered ? (
 										<span
 											className={`px-3 py-1 rounded-full text-sm font-medium ${

@@ -13,7 +13,7 @@
 //             </p>
 
 //             <section className="mb-8">
-//               <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
+//               <h2 className="text-2xl font-extrabold text-gray-900 dark:text-white mb-4">
 //                 1. Introduction
 //               </h2>
 //               <p className="text-gray-600 dark:text-gray-300">
@@ -26,7 +26,7 @@
 //             </section>
 
 //             <section className="mb-8">
-//               <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
+//               <h2 className="text-2xl font-extrabold text-gray-900 dark:text-white mb-4">
 //                 2. Data We Collect
 //               </h2>
 //               <p className="text-gray-600 dark:text-gray-300 mb-4">
@@ -49,7 +49,7 @@
 //             </section>
 
 //             <section className="mb-8">
-//               <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
+//               <h2 className="text-2xl font-extrabold text-gray-900 dark:text-white mb-4">
 //                 3. How We Use Your Data
 //               </h2>
 //               <p className="text-gray-600 dark:text-gray-300 mb-4">
@@ -69,7 +69,7 @@
 //             </section>
 
 //             <section className="mb-8">
-//               <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
+//               <h2 className="text-2xl font-extrabold text-gray-900 dark:text-white mb-4">
 //                 4. Data Security
 //               </h2>
 //               <p className="text-gray-600 dark:text-gray-300">
@@ -83,7 +83,7 @@
 //             </section>
 
 //             <section className="mb-8">
-//               <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
+//               <h2 className="text-2xl font-extrabold text-gray-900 dark:text-white mb-4">
 //                 5. Your Legal Rights
 //               </h2>
 //               <p className="text-gray-600 dark:text-gray-300 mb-4">
@@ -103,7 +103,7 @@
 //             </section>
 
 //             <section className="mb-8">
-//               <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
+//               <h2 className="text-2xl font-extrabold text-gray-900 dark:text-white mb-4">
 //                 6. Contact Us
 //               </h2>
 //               <p className="text-gray-600 dark:text-gray-300">
@@ -135,7 +135,7 @@ const PrivacyPolicy = () => {
 
 				{/* Introduction */}
 				<section className='mb-8'>
-					<h2 className='text-2xl font-semibold text-neutral-900 dark:text-white mb-4'>
+					<h2 className='text-2xl font-extrabold text-neutral-900 dark:text-white mb-4'>
 						Introduction
 					</h2>
 					<p className='text-neutral-600 dark:text-neutral-300 leading-relaxed'>
@@ -148,7 +148,7 @@ const PrivacyPolicy = () => {
 
 				{/* Data Collection */}
 				<section className='mb-8'>
-					<h2 className='text-2xl font-semibold text-neutral-900 dark:text-white mb-4'>
+					<h2 className='text-2xl font-extrabold text-neutral-900 dark:text-white mb-4'>
 						Data Collection
 					</h2>
 					<p className='text-neutral-600 dark:text-neutral-300 leading-relaxed'>
@@ -161,7 +161,7 @@ const PrivacyPolicy = () => {
 
 				{/* Data Usage */}
 				<section className='mb-8'>
-					<h2 className='text-2xl font-semibold text-neutral-900 dark:text-white mb-4'>
+					<h2 className='text-2xl font-extrabold text-neutral-900 dark:text-white mb-4'>
 						How We Use Your Data
 					</h2>
 					<p className='text-neutral-600 dark:text-neutral-300 leading-relaxed'>
@@ -177,7 +177,7 @@ const PrivacyPolicy = () => {
 
 				{/* Data Sharing */}
 				<section className='mb-8'>
-					<h2 className='text-2xl font-semibold text-neutral-900 dark:text-white mb-4'>
+					<h2 className='text-2xl font-extrabold text-neutral-900 dark:text-white mb-4'>
 						Data Sharing
 					</h2>
 					<p className='text-neutral-600 dark:text-neutral-300 leading-relaxed'>
@@ -192,7 +192,7 @@ const PrivacyPolicy = () => {
 
 				{/* User Rights */}
 				<section className='mb-8'>
-					<h2 className='text-2xl font-semibold text-neutral-900 dark:text-white mb-4'>
+					<h2 className='text-2xl font-extrabold text-neutral-900 dark:text-white mb-4'>
 						Your Rights
 					</h2>
 					<p className='text-neutral-600 dark:text-neutral-300 leading-relaxed'>
@@ -208,7 +208,7 @@ const PrivacyPolicy = () => {
 
 				{/* Security */}
 				<section className='mb-8'>
-					<h2 className='text-2xl font-semibold text-neutral-900 dark:text-white mb-4'>
+					<h2 className='text-2xl font-extrabold text-neutral-900 dark:text-white mb-4'>
 						Security
 					</h2>
 					<p className='text-neutral-600 dark:text-neutral-300 leading-relaxed'>
@@ -220,7 +220,7 @@ const PrivacyPolicy = () => {
 
 				{/* Changes to This Policy */}
 				<section className='mb-8'>
-					<h2 className='text-2xl font-semibold text-neutral-900 dark:text-white mb-4'>
+					<h2 className='text-2xl font-extrabold text-neutral-900 dark:text-white mb-4'>
 						Changes to This Policy
 					</h2>
 					<p className='text-neutral-600 dark:text-neutral-300 leading-relaxed'>
@@ -232,7 +232,7 @@ const PrivacyPolicy = () => {
 
 				{/* Contact Information */}
 				<section>
-					<h2 className='text-2xl font-semibold text-neutral-900 dark:text-white mb-4'>
+					<h2 className='text-2xl font-extrabold text-neutral-900 dark:text-white mb-4'>
 						Contact Us
 					</h2>
 					<p className='text-neutral-600 dark:text-neutral-300 leading-relaxed'>

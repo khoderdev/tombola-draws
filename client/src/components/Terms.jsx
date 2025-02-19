@@ -28,7 +28,7 @@ export default function Terms() {
             className="bg-white dark:bg-neutral-800 rounded-2xl p-6 sm:p-8 shadow-sm"
             {...fadeIn}
           >
-            <h2 className="text-2xl font-semibold text-neutral-900 dark:text-white mb-6 flex items-center">
+            <h2 className="text-2xl font-extrabold text-neutral-900 dark:text-white mb-6 flex items-center">
               <span className="text-blue-500 dark:text-blue-400 mr-3">1.</span>
               Introduction
             </h2>
@@ -43,7 +43,7 @@ export default function Terms() {
             className="bg-white dark:bg-neutral-800 rounded-2xl p-6 sm:p-8 shadow-sm"
             {...fadeIn}
           >
-            <h2 className="text-2xl font-semibold text-neutral-900 dark:text-white mb-6 flex items-center">
+            <h2 className="text-2xl font-extrabold text-neutral-900 dark:text-white mb-6 flex items-center">
               <span className="text-blue-500 dark:text-blue-400 mr-3">2.</span>
               Eligibility
             </h2>
@@ -80,7 +80,7 @@ export default function Terms() {
             className="bg-white dark:bg-neutral-800 rounded-2xl p-6 sm:p-8 shadow-sm"
             {...fadeIn}
           >
-            <h2 className="text-2xl font-semibold text-neutral-900 dark:text-white mb-6 flex items-center">
+            <h2 className="text-2xl font-extrabold text-neutral-900 dark:text-white mb-6 flex items-center">
               <span className="text-blue-500 dark:text-blue-400 mr-3">3.</span>
               Draw Rules
             </h2>
@@ -118,7 +118,7 @@ export default function Terms() {
             className="bg-white dark:bg-neutral-800 rounded-2xl p-6 sm:p-8 shadow-sm"
             {...fadeIn}
           >
-            <h2 className="text-2xl font-semibold text-neutral-900 dark:text-white mb-6 flex items-center">
+            <h2 className="text-2xl font-extrabold text-neutral-900 dark:text-white mb-6 flex items-center">
               <span className="text-blue-500 dark:text-blue-400 mr-3">4.</span>
               Tickets and Payments
             </h2>
@@ -175,7 +175,7 @@ export default function Terms() {
                         />
                       </svg>
                     </span>
-                    <h3 className="text-lg font-semibold text-neutral-900 dark:text-white">
+                    <h3 className="text-lg font-extrabold text-neutral-900 dark:text-white">
                       {item.title}
                     </h3>
                   </div>
@@ -191,7 +191,7 @@ export default function Terms() {
             className="bg-white dark:bg-neutral-800 rounded-2xl p-6 sm:p-8 shadow-sm"
             {...fadeIn}
           >
-            <h2 className="text-2xl font-semibold text-neutral-900 dark:text-white mb-6 flex items-center">
+            <h2 className="text-2xl font-extrabold text-neutral-900 dark:text-white mb-6 flex items-center">
               <span className="text-blue-500 dark:text-blue-400 mr-3">5.</span>
               Prize Collection
             </h2>
@@ -234,7 +234,7 @@ export default function Terms() {
             className="bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700 rounded-2xl p-6 sm:p-8 text-white shadow-lg"
             {...fadeIn}
           >
-            <h2 className="text-2xl font-semibold mb-4">Need Help?</h2>
+            <h2 className="text-2xl font-extrabold mb-4">Need Help?</h2>
             <p className="text-lg mb-6">
               For questions about these terms or our platform, please contact
               our support team.

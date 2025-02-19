@@ -51,7 +51,7 @@ export default function SecuritySettings() {
       {/* Password Update Section */}
       <div className="grid gap-8">
         <div className="md:col-span-1">
-          <h3 className="text-xl font-semibold text-neutral-900 dark:text-white">
+          <h3 className="text-xl font-extrabold text-neutral-900 dark:text-white">
             Password
           </h3>
           <p className="mt-2 text-sm text-neutral-500 dark:text-neutral-400">
@@ -181,7 +181,7 @@ export default function SecuritySettings() {
       {/* Two-Factor Authentication Section */}
       <div className="md:grid md:grid-cols-3 md:gap-8">
         <div className="md:col-span-1">
-          <h3 className="text-xl font-semibold text-neutral-900 dark:text-white">
+          <h3 className="text-xl font-extrabold text-neutral-900 dark:text-white">
             Two-Factor Authentication
           </h3>
           <p className="mt-2 text-sm text-neutral-500 dark:text-neutral-400">

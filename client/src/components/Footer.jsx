@@ -8,7 +8,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* About */}
           <div>
-            <h3 className="text-sm font-semibold text-neutral-900 dark:text-white uppercase tracking-wider">
+            <h3 className="text-sm font-extrabold text-neutral-900 dark:text-white uppercase tracking-wider">
               About
             </h3>
             <p className="mt-4 text-base text-neutral-600 dark:text-neutral-400">
@@ -19,7 +19,7 @@ export default function Footer() {
 
           {/* Quick Links */}
           <div>
-            <h3 className="text-sm font-semibold text-neutral-900 dark:text-white uppercase tracking-wider">
+            <h3 className="text-sm font-extrabold text-neutral-900 dark:text-white uppercase tracking-wider">
               Quick Links
             </h3>
             <ul className="mt-4 space-y-4">
@@ -52,7 +52,7 @@ export default function Footer() {
 
           {/* Contact */}
           <div>
-            <h3 className="text-sm font-semibold text-neutral-900 dark:text-white uppercase tracking-wider">
+            <h3 className="text-sm font-extrabold text-neutral-900 dark:text-white uppercase tracking-wider">
               Contact
             </h3>
             <ul className="mt-4 space-y-4">
