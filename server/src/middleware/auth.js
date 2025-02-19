@@ -1,6 +1,37 @@
 const jwt = require('jsonwebtoken');
 const { User } = require('../models');
 
+// Optional authentication middleware
+exports.optionalAuth = async (req, res, next) => {
+  try {
+    let token;
+
+    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+      token = req.headers.authorization.split(' ')[1];
+    }
+
+    if (!token) {
+      return next(); // Continue without authentication
+    }
+
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const user = await User.findByPk(decoded.id);
+
+      if (user) {
+        req.user = user;
+      }
+    } catch (error) {
+      console.log('Optional auth token invalid:', error.message);
+    }
+
+    next();
+  } catch (error) {
+    console.error('Optional auth error:', error);
+    next();
+  }
+};
+
 exports.protect = async (req, res, next) => {
   try {
     let token;

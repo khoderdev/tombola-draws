@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 const { v4: uuidv4 } = require("uuid");
 const { User } = require("../models");
 const { sendEmail } = require("../utils/email");
+const activityTracker = require("../utils/activityTracker");
 
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -36,6 +37,14 @@ exports.register = async (req, res) => {
       address,
       verificationToken,
     });
+
+    // Track user registration
+    await activityTracker.trackUserActivity(
+      "User Registration",
+      `New user registered: ${name}`,
+      user.id,
+      { email }
+    );
 
     // Send verification email
     try {
@@ -99,6 +108,13 @@ exports.login = async (req, res) => {
         message: "Invalid email or password",
       });
     }
+
+    // Track successful login
+    await activityTracker.trackUserActivity(
+      "User Login",
+      `User logged in: ${user.name}`,
+      user.id
+    );
 
     const token = generateToken(user.id);
     const refreshToken = generateRefreshToken(user.id);

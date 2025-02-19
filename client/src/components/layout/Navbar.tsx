@@ -1,9 +1,15 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import { AnimatePresence, motion, useScroll, useMotionValueEvent } from "framer-motion";
+import {
+  AnimatePresence,
+  motion,
+  useScroll,
+  useMotionValueEvent,
+} from "framer-motion";
 import DarkLightSwitch from "./ThemeToggle";
 import Menu from "./Menu";
 import { useAuth, User } from "../../context/AuthContext";
+import Button from "../Button";
 
 export default function Navbar() {
   const { user, logout } = useAuth() as unknown as {
@@ -13,30 +19,60 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [hidden, setHidden] = useState(false);
+  const [isAtTop, setIsAtTop] = useState(true);
   const { scrollY } = useScroll();
   const lastScrollY = useRef(0);
+  const lastScrollTime = useRef(Date.now());
+  const SCROLL_THRESHOLD = 50;
+  const THROTTLE_TIME = 100; // ms
 
   useMotionValueEvent(scrollY, "change", (latest) => {
-    const direction = latest > lastScrollY.current;
-    if (direction !== hidden && latest > 50) {
-      setHidden(direction);
+    const now = Date.now();
+    if (now - lastScrollTime.current < THROTTLE_TIME) return;
+
+    const scrollDifference = latest - lastScrollY.current;
+    const isScrollingDown = scrollDifference > 0;
+    const isScrollingUp = scrollDifference < 0;
+    const isSignificantScroll = Math.abs(scrollDifference) > 10;
+
+    setIsAtTop(latest < 10);
+
+    if (isSignificantScroll) {
+      if (isScrollingDown && !hidden && latest > SCROLL_THRESHOLD) {
+        setHidden(true);
+      } else if (isScrollingUp && hidden) {
+        setHidden(false);
+      }
     }
+
+    lastScrollTime.current = now;
     lastScrollY.current = latest;
   });
 
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const navVariants = {
-    visible: { 
+    visible: {
       y: 0,
       opacity: 1,
-      transition: { duration: 0.2, ease: "easeInOut" }
+      boxShadow:
+        "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
+      transition: {
+        duration: 0.3,
+        ease: [0.4, 0, 0.2, 1],
+        opacity: { duration: 0.2 },
+      },
     },
-    hidden: { 
+    hidden: {
       y: "-100%",
       opacity: 0,
-      transition: { duration: 0.2, ease: "easeInOut" }
-    }
+      boxShadow: "none",
+      transition: {
+        duration: 0.3,
+        ease: [0.4, 0, 0.2, 1],
+        opacity: { duration: 0.2 },
+      },
+    },
   };
 
   const handleAvatarClick = () => {
@@ -67,13 +103,17 @@ export default function Navbar() {
     <motion.nav
       variants={navVariants}
       animate={hidden ? "hidden" : "visible"}
-      className="fixed top-0 left-0 right-0 z-40 bg-neutral-100/75 dark:bg-neutral-900/75 backdrop-blur-md"
+      initial="visible"
+      className={`fixed top-0 left-0 right-0 z-40 transition-colors duration-200 ${isAtTop
+          ? "bg-transparent"
+          : "bg-neutral-100/85 dark:bg-neutral-900/85 backdrop-blur-md"
+        }`}
     >
       <div className=" px-4 sm:px-6 lg:px-8 shadow dark:shadow-neutral-800 sticky top-0 z-40 w-full">
         <div className="flex max-w-7xl items-center justify-between h-16 mx-auto">
           {/* Logo */}
           <div className="flex items-center">
-            <Link to="/" className="font-bold text-4xl">
+            <Link to="/" className="font-extrabold text-4xl">
               Tombola
             </Link>
           </div>
@@ -81,13 +121,7 @@ export default function Navbar() {
           {/* Right Side: Links, Avatar, Dark Mode Toggle, and Menu Button */}
           <div className="flex items-center space-x-2 sm:space-x-4">
             {/* Draws Link */}
-            <Link
-              to="/draws"
-              className="bg-red-500 hover:bg-red-600 px-2 py-1 rounded-md"
-            >
-              Draws
-            </Link>
-
+            <Link className="btn" to="/draws">Draws</Link>
             {/* Avatar Dropdown */}
             {user ? (
               <div className="relative" ref={dropdownRef}>

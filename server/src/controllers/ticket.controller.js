@@ -1,5 +1,5 @@
 const { User, Draw, Ticket } = require("../models");
-const { v4: uuidv4 } = require("uuid");
+const activityTracker = require('../utils/activityTracker');
 
 exports.getMyTickets = async (req, res) => {
   try {
@@ -11,6 +11,11 @@ exports.getMyTickets = async (req, res) => {
           as: "Draw",
           attributes: ["id", "title", "prize", "endDate", "status", "price"],
         },
+        {
+          model: User,
+          as: "User",
+          attributes: ["id", "name", "email", "avatar"],
+        }
       ],
       order: [["purchaseDate", "DESC"]],
     });
@@ -22,6 +27,7 @@ exports.getMyTickets = async (req, res) => {
           const plainTicket = ticket.get({ plain: true });
           return {
             ...plainTicket,
+            User: plainTicket.User,
             Draw: plainTicket.Draw
               ? {
                   ...plainTicket.Draw,
@@ -43,69 +49,80 @@ exports.getMyTickets = async (req, res) => {
 
 exports.purchaseTicket = async (req, res) => {
   try {
-    const { drawId } = req.params;
-    const { paymentMethod } = req.body;
+    const { drawId, quantity } = req.body;
     const userId = req.user.id;
 
-    // Find the draw
     const draw = await Draw.findByPk(drawId);
     if (!draw) {
       return res.status(404).json({
-        status: "error",
-        message: "Draw not found",
+        status: 'error',
+        message: 'Draw not found',
       });
     }
 
-    // Check if draw is active
-    if (draw.status !== "active") {
-      return res.status(400).json({
-        status: "error",
-        message: "Draw is not active",
-      });
-    }
+    const tickets = await Ticket.bulkCreate(
+      Array(quantity).fill({
+        drawId,
+        userId,
+        status: 'active',
+      })
+    );
 
-    // Check if draw has reached max tickets
-    const ticketCount = await Ticket.count({ where: { drawId } });
-    if (draw.maxTickets && ticketCount >= draw.maxTickets) {
-      return res.status(400).json({
-        status: "error",
-        message: "Draw has reached maximum number of tickets",
-      });
-    }
-
-    // Generate unique ticket number
-    const ticketNumber = uuidv4().substring(0, 8).toUpperCase();
-
-    // Create ticket with pending status
-    const ticket = await Ticket.create({
-      number: ticketNumber,
+    // Track ticket purchase
+    await activityTracker.trackTicketActivity(
+      'Tickets Purchased',
+      `${quantity} ticket(s) purchased for draw: ${draw.title}`,
       userId,
-      drawId,
-      status: "pending",
-      paymentStatus: "pending",
-      paymentMethod,
-      paymentReference: uuidv4(),
-    });
+      { drawId, quantity }
+    );
 
     res.status(201).json({
-      status: "success",
-      message: "Ticket subscription pending approval",
-      data: {
-        ticket: {
-          id: ticket.id,
-          number: ticket.number,
-          status: ticket.status,
-          paymentStatus: ticket.paymentStatus,
-          paymentReference: ticket.paymentReference,
-          purchaseDate: ticket.purchaseDate,
-        },
-      },
+      status: 'success',
+      data: { tickets },
     });
   } catch (error) {
-    console.error("Error purchasing ticket:", error);
-    res.status(500).json({
-      status: "error",
-      message: "Error purchasing ticket",
+    res.status(400).json({
+      status: 'error',
+      message: error.message,
+    });
+  }
+};
+
+exports.cancelTicket = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user.id;
+
+    const ticket = await Ticket.findOne({
+      where: { id, userId },
+      include: [{ model: Draw, as: 'draw' }],
+    });
+
+    if (!ticket) {
+      return res.status(404).json({
+        status: 'error',
+        message: 'Ticket not found',
+      });
+    }
+
+    await ticket.update({ status: 'cancelled' });
+
+    // Track ticket cancellation
+    await activityTracker.trackTicketActivity(
+      'Ticket Cancelled',
+      `Ticket cancelled for draw: ${ticket.draw.title}`,
+      userId,
+      { ticketId: id, drawId: ticket.drawId }
+    );
+
+    res.json({
+      status: 'success',
+      data: { ticket },
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: 'error',
+      message: error.message,
     });
   }
 };
@@ -149,6 +166,14 @@ exports.updateTicketStatus = async (req, res) => {
 
     await ticket.save();
 
+    // Track ticket status update
+    await activityTracker.trackTicketActivity(
+      'Ticket Status Updated',
+      `Ticket status updated to ${status} for draw: ${ticket.Draw.title}`,
+      req.user.id,
+      { ticketId, drawId: ticket.Draw.id }
+    );
+
     res.status(200).json({
       status: "success",
       message: `Ticket ${status} successfully`,
@@ -178,7 +203,7 @@ exports.getTicketDetails = async (req, res) => {
         },
         {
           model: User,
-          attributes: ["id", "name", "email"],
+          attributes: ["id", "name", "email", "avatar"],
         },
       ],
     });

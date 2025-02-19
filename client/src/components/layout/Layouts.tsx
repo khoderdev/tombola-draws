@@ -1,5 +1,6 @@
 import React, { ReactNode } from "react";
 import Navbar from "./Navbar";
+import Footer from '../Footer';
 
 interface LayoutsProps {
   children: ReactNode;
@@ -12,6 +13,7 @@ const Layouts: React.FC<LayoutsProps> = ({ children }) => {
       <main className="min-h-[calc(100dvh-4rem)] w-full relative pt-16">
         {children}
       </main>
+      <Footer />
     </div>
   );
 };

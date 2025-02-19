@@ -7,7 +7,7 @@ import PendingTickets from "./PendingTickets";
 
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState("stats");
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [stats, setStats] = useState(null);
   const [pendingTickets, setPendingTickets] = useState([]);
@@ -23,11 +23,18 @@ export default function AdminDashboard() {
   const fetchStats = async () => {
     try {
       setLoading(true);
+      setError("");
+      console.log("Fetching stats...");
       const response = await adminService.getStats();
+      console.log("Stats response:", response);
+      
+      // The response is already unwrapped in the adminService
       setStats(response.data);
+      console.log("Stats set:", response.data);
     } catch (err) {
-      console.error(err);
-      setError("Failed to load statistics");
+      console.error("Error fetching stats:", err);
+      setError(err.message || "Failed to load statistics");
+      setStats(null);
     } finally {
       setLoading(false);
     }
@@ -36,12 +43,12 @@ export default function AdminDashboard() {
   const fetchPendingTickets = async () => {
     try {
       setLoading(true);
+      setError("");
       const response = await adminService.getPendingTickets();
       setPendingTickets(response.data.tickets);
     } catch (err) {
-      console.error(err);
-      console.log(err); // Added console log for debugging
-      setError("Failed to load pending tickets");
+      console.error("Error fetching pending tickets:", err);
+      setError(err.message || "Failed to load pending tickets");
     } finally {
       setLoading(false);
     }
@@ -60,7 +67,7 @@ export default function AdminDashboard() {
         fetchStats();
       }
     } catch (err) {
-      console.error(err);
+      console.error("Error updating ticket status:", err);
       setError("Failed to update ticket status");
     }
   };
@@ -72,12 +79,22 @@ export default function AdminDashboard() {
     { id: "users", name: "Manage Users" },
   ];
 
-  if (loading) {
-    return <div className="p-4">Loading...</div>;
-  }
-
   if (error) {
-    return <div className="p-4 text-red-500">{error}</div>;
+    return (
+      <div className="p-4 text-red-500">
+        <p>{error}</p>
+        <button
+          onClick={() => {
+            setError("");
+            if (activeTab === "stats") fetchStats();
+            else if (activeTab === "pending") fetchPendingTickets();
+          }}
+          className="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+        >
+          Retry
+        </button>
+      </div>
+    );
   }
 
   return (
@@ -93,7 +110,7 @@ export default function AdminDashboard() {
                 className={`${
                   activeTab === tab.id
                     ? "border-blue-500 text-blue-600"
-                    : "border-transparent text-neutral-500 hover:border-neutral-300"
+                    : "border-transparent text-neutral-500 hover:border-neutral-300 dark:text-neutral-100 dark:hover:border-neutral-500"
                 } whitespace-nowrap py-4 px-6 border-b-2 font-medium flex-shrink-0 flex items-center`}
               >
                 {tab.name}
@@ -109,11 +126,12 @@ export default function AdminDashboard() {
       </div>
 
       {/* Tab Content */}
-      {activeTab === "stats" && <AdminStats stats={stats} />}
+      {activeTab === "stats" && <AdminStats stats={stats} loading={loading} />}
       {activeTab === "pending" && (
         <PendingTickets
           tickets={pendingTickets}
           onUpdateStatus={handleTicketStatusUpdate}
+          loading={loading}
         />
       )}
       {activeTab === "draws" && <AdminDraws />}

@@ -1,31 +1,28 @@
 const { User, Draw, Ticket } = require('../models');
 const { Op } = require('sequelize');
 const sequelize = require('../config/database');
+const activityTracker = require('../utils/activityTracker');
 
 exports.getStats = async (req, res) => {
   try {
+    // Basic stats
     const totalUsers = await User.count();
     const activeDraws = await Draw.count({ where: { status: 'active' } });
     
-    // Calculate total revenue by summing up (number of tickets * draw price)
+    // Calculate total revenue
     const totalRevenue = await Ticket.findAll({
       attributes: [
-        [sequelize.fn('COUNT', sequelize.col('Ticket.id')), 'ticketCount'],
-        [sequelize.col('Draw.price'), 'drawPrice']
+        [sequelize.fn('SUM', sequelize.col('Draw.price')), 'total']
       ],
       include: [{ 
         model: Draw,
         as: 'Draw',
         attributes: []
       }],
-      group: ['Draw.price'],
       raw: true
-    }).then(results => 
-      results.reduce((sum, row) => 
-        sum + (parseFloat(row.drawPrice) * parseInt(row.ticketCount)), 0)
-    );
+    }).then(results => results[0]?.total || 0);
 
-    // Calculate growth rates
+    // Growth calculations
     const lastMonth = new Date();
     lastMonth.setMonth(lastMonth.getMonth() - 1);
 
@@ -49,7 +46,7 @@ exports.getStats = async (req, res) => {
 
     const drawGrowth = activeDraws > 0 ? ((newDraws / activeDraws) * 100).toFixed(2) : 0;
 
-    // Calculate conversion rate
+    // Conversion rate
     const usersWithTickets = await User.count({
       include: [{
         model: Ticket,
@@ -60,71 +57,40 @@ exports.getStats = async (req, res) => {
 
     const conversionRate = totalUsers > 0 ? ((usersWithTickets / totalUsers) * 100).toFixed(2) : 0;
 
-    // Calculate last month's conversion rate for comparison
-    const lastMonthUsersWithTickets = await User.count({
-      include: [{
-        model: Ticket,
-        as: 'tickets',
-        required: true,
-        where: {
-          createdAt: {
-            [Op.lt]: new Date(),
-            [Op.gte]: lastMonth,
-          },
-        },
-      }],
+    // Recent activity (simplified)
+    const recentUsers = await User.findAll({
+      limit: 5,
+      order: [['createdAt', 'DESC']],
+      attributes: ['id', 'name', 'createdAt'],
     });
 
-    const lastMonthUsers = await User.count({
-      where: {
-        createdAt: {
-          [Op.lt]: new Date(),
-          [Op.gte]: lastMonth,
-        },
-      },
+    const recentTickets = await Ticket.findAll({
+      limit: 5,
+      order: [['createdAt', 'DESC']],
+      include: [
+        { model: User, as: 'User', attributes: ['name'] },
+        { model: Draw, as: 'Draw', attributes: ['title'] },
+      ],
     });
-
-    const lastMonthConversionRate = lastMonthUsers > 0 
-      ? ((lastMonthUsersWithTickets / lastMonthUsers) * 100).toFixed(2)
-      : 0;
-
-    const conversionRateChange = (parseFloat(conversionRate) - parseFloat(lastMonthConversionRate)).toFixed(2);
-
-    // Get recent activity
-    const recentActivity = await Promise.all([
-      User.findAll({
-        limit: 5,
-        order: [['createdAt', 'DESC']],
-        attributes: ['id', 'name', 'createdAt'],
-      }),
-      Ticket.findAll({
-        limit: 5,
-        order: [['createdAt', 'DESC']],
-        include: [
-          { model: User, as: 'User', attributes: ['name'] },
-          { model: Draw, as: 'Draw', attributes: ['title'] },
-        ],
-      }),
-    ]);
 
     const activity = [
-      ...recentActivity[0].map((user) => ({
+      ...recentUsers.map((user) => ({
         id: user.id,
         type: 'New User',
         title: `${user.name} joined`,
         description: 'New user registration',
         timestamp: user.createdAt,
       })),
-      ...recentActivity[1].map((ticket) => ({
+      ...recentTickets.map((ticket) => ({
         id: ticket.id,
         type: 'Ticket Purchase',
-        title: `${ticket.User.name} purchased a ticket`,
-        description: `Ticket purchased for ${ticket.Draw.title}`,
+        title: `${ticket.User?.name || 'Unknown'} purchased a ticket`,
+        description: `Ticket purchased for ${ticket.Draw?.title || 'Unknown Draw'}`,
         timestamp: ticket.createdAt,
       })),
-    ].sort((a, b) => b.timestamp - a.timestamp);
+    ].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 
-    // Add pending tickets count to stats
+    // Pending tickets
     const pendingTickets = await Ticket.count({
       where: { status: 'pending' }
     });
@@ -134,11 +100,11 @@ exports.getStats = async (req, res) => {
       data: {
         totalUsers,
         activeDraws,
-        totalRevenue: totalRevenue || 0,
-        userGrowth,
-        drawGrowth,
-        conversionRate,
-        conversionRateChange,
+        totalRevenue: parseFloat(totalRevenue) || 0,
+        userGrowth: parseFloat(userGrowth),
+        drawGrowth: parseFloat(drawGrowth),
+        conversionRate: parseFloat(conversionRate),
+        conversionRateChange: 0, // Simplified for now
         pendingTickets,
         recentActivity: activity.slice(0, 5),
       },
@@ -147,7 +113,8 @@ exports.getStats = async (req, res) => {
     console.error('Error in admin getStats:', error);
     res.status(500).json({
       status: 'error',
-      message: error.message || 'Error fetching statistics',
+      message: 'Error fetching statistics',
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined,
     });
   }
 };
@@ -155,19 +122,13 @@ exports.getStats = async (req, res) => {
 exports.getUsers = async (req, res) => {
   try {
     const users = await User.findAll({
-      attributes: { exclude: ['password'] },
-      include: [
-        {
-          model: Ticket,
-          as: 'tickets',
-          attributes: ['id'],
-        },
-      ],
+      attributes: ['id', 'name', 'email', 'role', 'isVerified', 'createdAt', 'avatar'],
+      order: [['createdAt', 'DESC']],
     });
 
     res.status(200).json({
       status: 'success',
-      data: users,
+      data: { users },
     });
   } catch (error) {
     console.error('Error in admin getUsers:', error);
@@ -197,6 +158,14 @@ exports.updateUser = async (req, res) => {
       role,
     });
 
+    // Track user update
+    await activityTracker.trackUserActivity(
+      'User Updated',
+      `User updated: ${user.name}`,
+      req.user.id,
+      { userId: user.id }
+    );
+
     res.status(200).json({
       status: 'success',
       data: user,
@@ -223,6 +192,14 @@ exports.deleteUser = async (req, res) => {
     }
 
     await user.destroy();
+
+    // Track user deletion
+    await activityTracker.trackUserActivity(
+      'User Deleted',
+      `User deleted: ${user.name}`,
+      req.user.id,
+      { userId: user.id }
+    );
 
     res.status(200).json({
       status: 'success',
@@ -304,6 +281,14 @@ exports.createDraw = async (req, res) => {
       status: 'active',
     });
 
+    // Track draw creation
+    await activityTracker.trackDrawActivity(
+      'Draw Created',
+      `New draw created: ${draw.title}`,
+      req.user.id,
+      { drawId: draw.id }
+    );
+
     res.status(201).json({
       status: 'success',
       data: draw,
@@ -354,6 +339,14 @@ exports.updateDraw = async (req, res) => {
 
     await draw.update(updates);
 
+    // Track draw update
+    await activityTracker.trackDrawActivity(
+      'Draw Updated',
+      `Draw updated: ${draw.title}`,
+      req.user.id,
+      { drawId: draw.id }
+    );
+
     res.status(200).json({
       status: 'success',
       data: draw,
@@ -389,6 +382,14 @@ exports.deleteDraw = async (req, res) => {
     }
 
     await draw.destroy();
+
+    // Track draw deletion
+    await activityTracker.trackDrawActivity(
+      'Draw Deleted',
+      `Draw deleted: ${draw.title}`,
+      req.user.id,
+      { drawId: draw.id }
+    );
 
     res.status(200).json({
       status: 'success',

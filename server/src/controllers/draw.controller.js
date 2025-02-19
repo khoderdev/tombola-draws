@@ -3,7 +3,12 @@ const { Op } = require("sequelize");
 
 exports.getDraws = async (req, res) => {
   try {
-    // Get all active draws
+    console.log('🎯 getDraws: Starting process...', {
+      isAuthenticated: !!req.user,
+      userId: req.user?.id
+    });
+    
+    // First, get all active draws
     let draws = await Draw.findAll({
       where: {
         status: "active",
@@ -12,50 +17,67 @@ exports.getDraws = async (req, res) => {
         },
       },
       order: [["createdAt", "DESC"]],
-      raw: true,
     });
 
-    // If user is authenticated, add their ticket information
+    // If user is authenticated, get their tickets in a single query
+    let userTickets = [];
     if (req.user) {
-      const userTickets = await Ticket.findAll({
-        where: { userId: req.user.id },
-        attributes: ['drawId', 'status', 'id'],
-        raw: true,
+      userTickets = await Ticket.findAll({
+        where: {
+          userId: req.user.id,
+          drawId: draws.map(draw => draw.id)
+        },
+        include: [{
+          model: User,
+          as: 'User',
+          attributes: ['id', 'name', 'email', 'avatar']
+        }]
       });
-
-      const userTicketMap = userTickets.reduce((map, ticket) => {
-        map[ticket.drawId] = {
-          status: ticket.status,
-          id: ticket.id
-        };
-        return map;
-      }, {});
-
-      draws = draws.map(draw => {
-        const ticketInfo = userTicketMap[draw.id];
-        return {
-          ...draw,
-          hasEntered: !!ticketInfo,
-          ticketStatus: ticketInfo ? ticketInfo.status : null,
-          ticketId: ticketInfo ? ticketInfo.id : null,
-        };
-      });
-    } else {
-      // For unauthenticated users, set default values
-      draws = draws.map(draw => ({
-        ...draw,
-        hasEntered: false,
-        ticketStatus: null,
-        ticketId: null,
-      }));
+      
+      console.log('🎫 Found user tickets:', userTickets.length);
     }
 
+    // Map draws and include ticket information if available
+    draws = draws.map(draw => {
+      const drawObj = draw.get({ plain: true });
+      
+      if (req.user) {
+        const userTicket = userTickets.find(ticket => ticket.drawId === drawObj.id);
+        console.log(`Processing draw ${drawObj.id}:`, {
+          hasTicket: !!userTicket,
+          ticketStatus: userTicket?.status
+        });
+
+        return {
+          ...drawObj,
+          hasEntered: !!userTicket,
+          ticketStatus: userTicket ? 'active' : null,
+          ticketId: userTicket ? userTicket.id : null,
+          ticketNumber: userTicket ? userTicket.number : null,
+          ticketUser: userTicket ? userTicket.User : null
+        };
+      } else {
+        return {
+          ...drawObj,
+          hasEntered: false,
+          ticketStatus: null,
+          ticketId: null,
+          ticketNumber: null,
+          ticketUser: null
+        };
+      }
+    });
+
+    console.log('✅ Sending response with processed draws');
     res.status(200).json({
       status: "success",
       data: draws,
     });
   } catch (error) {
-    console.error("Error in getDraws:", error);
+    console.error("❌ Error in getDraws:", {
+      message: error.message,
+      stack: error.stack
+    });
     res.status(500).json({
       status: "error",
       message: "Error fetching draws",
@@ -343,10 +365,15 @@ exports.selectWinner = async (req, res) => {
 
     await winningTicket.update({ status: "won" });
 
+    // Get winner with avatar
+    const winner = await User.findByPk(winningTicket.User.id, {
+      attributes: ['id', 'name', 'email', 'avatar']
+    });
+
     res.status(200).json({
       status: "success",
       data: {
-        winner: winningTicket.User,
+        winner,
         ticket: winningTicket,
       },
     });
@@ -360,12 +387,21 @@ exports.selectWinner = async (req, res) => {
 
 exports.enterDraw = async (req, res) => {
   try {
+    console.log('🎯 enterDraw: Starting process...');
     const { drawId } = req.params;
     const userId = req.user.id;
+    console.log('📝 Request details:', { drawId, userId });
 
     const draw = await Draw.findByPk(drawId);
+    console.log('🎲 Found draw:', draw ? {
+      id: draw.id,
+      title: draw.title,
+      status: draw.status,
+      endDate: draw.endDate
+    } : 'Not found');
 
     if (!draw) {
+      console.log('❌ Draw not found error');
       return res.status(404).json({
         status: 'error',
         message: 'Draw not found',
@@ -373,7 +409,9 @@ exports.enterDraw = async (req, res) => {
     }
 
     // Check if draw is active
+    console.log('🔍 Checking draw status:', { currentStatus: draw.status });
     if (draw.status !== 'active') {
+      console.log('❌ Draw not active error');
       return res.status(400).json({
         status: 'error',
         message: 'This draw is not currently active',
@@ -387,8 +425,14 @@ exports.enterDraw = async (req, res) => {
         userId,
       },
     });
+    console.log('🎫 Checking existing ticket:', existingTicket ? {
+      id: existingTicket.id,
+      number: existingTicket.number,
+      status: existingTicket.status
+    } : 'No existing ticket');
 
     if (existingTicket) {
+      console.log('❌ User already entered error');
       return res.status(400).json({
         status: 'error',
         message: 'You have already entered this draw',
@@ -396,18 +440,61 @@ exports.enterDraw = async (req, res) => {
     }
 
     // Create ticket
+    const ticketNumber = Math.random().toString(36).substring(2, 8).toUpperCase();
+    console.log('🎫 Generating ticket number:', ticketNumber);
+    
     const ticket = await Ticket.create({
       drawId,
       userId,
-      number: Math.random().toString(36).substring(2, 8).toUpperCase(), // Generate a random 6-character ticket number
+      number: ticketNumber,
+    });
+    console.log('✨ Created new ticket:', {
+      id: ticket.id,
+      number: ticket.number,
+      drawId: ticket.drawId,
+      userId: ticket.userId
     });
 
-    res.status(201).json({
-      status: 'success',
-      data: ticket,
+    // Fetch the created ticket with user information
+    const ticketWithUser = await Ticket.findByPk(ticket.id, {
+      include: [{
+        model: User,
+        as: 'User',
+        attributes: ['id', 'name', 'email', 'avatar']
+      }]
     });
+    console.log('👤 Fetched ticket with user:', {
+      ticketId: ticketWithUser.id,
+      number: ticketWithUser.number,
+      userName: ticketWithUser.User.name,
+      userEmail: ticketWithUser.User.email
+    });
+
+    // Get the updated draw with the new ticket
+    const updatedDraw = await Draw.findByPk(drawId);
+    console.log('🎲 Updated draw status:', {
+      id: updatedDraw.id,
+      status: updatedDraw.status
+    });
+
+    const responseData = {
+      status: 'success',
+      data: {
+        ticket: ticketWithUser,
+        hasEntered: true,
+        ticketStatus: 'active',
+        drawStatus: updatedDraw.status
+      },
+    };
+    console.log('✅ Sending success response:', responseData);
+
+    res.status(201).json(responseData);
   } catch (error) {
-    console.error('Error entering draw:', error);
+    console.error('❌ Error in enterDraw:', {
+      message: error.message,
+      stack: error.stack,
+      details: error
+    });
     res.status(500).json({
       status: 'error',
       message: 'Error entering draw',

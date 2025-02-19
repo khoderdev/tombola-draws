@@ -123,29 +123,29 @@ export const drawsService = {
 // Profile service
 export const profileService = {
   getProfile: async () => {
-    const response = await api.get('/profile');
+    const response = await api.get("/profile");
     return response.data;
   },
 
   updateProfile: async (data) => {
-    const response = await api.put('/profile', data);
+    const response = await api.put("/profile", data);
     return response.data;
   },
 
   changePassword: async (data) => {
-    const response = await api.post('/profile/change-password', data);
+    const response = await api.post("/profile/change-password", data);
     return response.data;
   },
 
   uploadAvatar: async (formData) => {
-    const response = await api.post('/profile/avatar', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
+    const response = await api.post("/profile/avatar", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
     });
     return response.data;
   },
 
   getStats: async () => {
-    const response = await api.get('/profile/stats');
+    const response = await api.get("/profile/stats");
     return response.data;
   },
 };
@@ -153,13 +153,27 @@ export const profileService = {
 // Admin service
 export const adminService = {
   getStats: async () => {
-    const response = await api.get("/admin/stats");
-    return response.data;
+    try {
+      const response = await api.get("/admin/stats");
+      console.log("Raw stats response:", response);
+      if (response?.data?.status === "success" && response?.data?.data) {
+        return { status: "success", data: response.data.data };
+      }
+      throw new Error("Invalid response from server");
+    } catch (error) {
+      console.error("Error fetching admin stats:", error);
+      throw error;
+    }
   },
 
   getUsers: async () => {
-    const response = await api.get("/admin/users");
-    return response.data;
+    try {
+      const response = await api.get("/admin/users");
+      return response;
+    } catch (error) {
+      console.error('Admin getUsers error:', error);
+      throw error;
+    }
   },
 
   updateUser: async (userId, userData) => {
@@ -195,20 +209,47 @@ export const adminService = {
   uploadImage: async (formData) => {
     const response = await api.post("/admin/upload-image", formData, {
       headers: {
-        'Content-Type': 'multipart/form-data',
+        "Content-Type": "multipart/form-data",
       },
     });
     return response.data;
   },
 
   getPendingTickets: async () => {
-    const response = await api.get('/admin/pending-tickets');
+    const response = await api.get("/admin/pending-tickets");
     return response.data;
   },
 
   updateTicketStatus: async (ticketId, statusData) => {
-    const response = await api.patch(`/admin/tickets/${ticketId}/status`, statusData);
+    const response = await api.patch(
+      `/admin/tickets/${ticketId}/status`,
+      statusData
+    );
     return response.data;
+  },
+};
+
+export const activityService = {
+  getRecentActivities: async (params = {}) => {
+    const { limit = 10, type, startDate, endDate } = params;
+    const queryParams = new URLSearchParams();
+
+    if (limit) queryParams.append("limit", limit);
+    if (type) queryParams.append("type", type);
+    if (startDate) queryParams.append("startDate", startDate);
+    if (endDate) queryParams.append("endDate", endDate);
+
+    return api.get(`/activity/recent?${queryParams.toString()}`);
+  },
+
+  getActivityStats: async (params = {}) => {
+    const { startDate, endDate } = params;
+    const queryParams = new URLSearchParams();
+
+    if (startDate) queryParams.append("startDate", startDate);
+    if (endDate) queryParams.append("endDate", endDate);
+
+    return api.get(`/activity/stats?${queryParams.toString()}`);
   },
 };
 
