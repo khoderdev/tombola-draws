@@ -12,6 +12,11 @@ exports.getMyTickets = async (req, res) => {
           as: "Draw",
           attributes: ["id", "title", "prize", "endDate", "status", "price"],
         },
+        {
+          model: User,
+          as: "User",
+          attributes: ["id", "name", "email", "avatar"],
+        }
       ],
       order: [["purchaseDate", "DESC"]],
     });
@@ -23,6 +28,7 @@ exports.getMyTickets = async (req, res) => {
           const plainTicket = ticket.get({ plain: true });
           return {
             ...plainTicket,
+            User: plainTicket.User,
             Draw: plainTicket.Draw
               ? {
                   ...plainTicket.Draw,
@@ -198,7 +204,7 @@ exports.getTicketDetails = async (req, res) => {
         },
         {
           model: User,
-          attributes: ["id", "name", "email"],
+          attributes: ["id", "name", "email", "avatar"],
         },
       ],
     });

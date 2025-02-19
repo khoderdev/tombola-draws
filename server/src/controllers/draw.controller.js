@@ -343,10 +343,15 @@ exports.selectWinner = async (req, res) => {
 
     await winningTicket.update({ status: "won" });
 
+    // Get winner with avatar
+    const winner = await User.findByPk(winningTicket.User.id, {
+      attributes: ['id', 'name', 'email', 'avatar']
+    });
+
     res.status(200).json({
       status: "success",
       data: {
-        winner: winningTicket.User,
+        winner,
         ticket: winningTicket,
       },
     });

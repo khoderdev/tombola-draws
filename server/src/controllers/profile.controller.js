@@ -7,7 +7,10 @@ const { uploadToCloudinary } = require("../utils/cloudinary");
 exports.getProfile = async (req, res) => {
   try {
     const user = await User.findByPk(req.user.id, {
-      attributes: { exclude: ["password"] },
+      attributes: { 
+        exclude: ["password"],
+        include: ["avatar"]  // Explicitly include avatar
+      },
     });
 
     if (!user) {

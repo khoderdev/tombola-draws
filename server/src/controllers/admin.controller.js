@@ -122,19 +122,13 @@ exports.getStats = async (req, res) => {
 exports.getUsers = async (req, res) => {
   try {
     const users = await User.findAll({
-      attributes: { exclude: ['password'] },
-      include: [
-        {
-          model: Ticket,
-          as: 'tickets',
-          attributes: ['id'],
-        },
-      ],
+      attributes: ['id', 'name', 'email', 'role', 'isVerified', 'createdAt', 'avatar'],
+      order: [['createdAt', 'DESC']],
     });
 
     res.status(200).json({
       status: 'success',
-      data: users,
+      data: { users },
     });
   } catch (error) {
     console.error('Error in admin getUsers:', error);
