@@ -18,7 +18,7 @@ export default function DrawList() {
 			const formattedDraws = (response.data || []).map((draw) => ({
 				...draw,
 				hasEntered: draw.hasEntered || false,
-				ticketStatus: draw.ticketStatus || null,
+				ticketStatus: draw.hasEntered ? draw.status : null,
 				ticketId: draw.ticketId || null,
 			}));
 			setDraws(formattedDraws);
@@ -50,26 +50,32 @@ export default function DrawList() {
 
 			try {
 				const response = await drawsService.enterDraw(drawId);
-				if (response.data?.ticket) {
+				if (response.data) {
+					// Immediately update the UI
 					setDraws((prevDraws) =>
 						prevDraws.map((draw) =>
 							draw.id === drawId
 								? {
 										...draw,
 										hasEntered: true,
-										ticketStatus: 'pending',
+										ticketStatus: 'active',
 										ticketId: response.data.ticket.id,
+										ticketNumber: response.data.ticket.number,
+										ticketUser: response.data.ticket.User
 								  }
 								: draw
 						)
 					);
+					
+					// Fetch fresh data to ensure everything is in sync
+					fetchDraws();
 				}
 			} catch (err) {
 				console.error('Error entering draw:', err);
 				setError(err.response?.data?.message || 'Failed to enter draw');
 			}
 		},
-		[isAuthenticated, navigate]
+		[isAuthenticated, navigate, fetchDraws]
 	);
 
 	const getStatusDisplay = (status) => {
@@ -82,7 +88,7 @@ export default function DrawList() {
 			case 'active':
 				return {
 					text: 'Subscribed',
-					className: 'bg-green-100 text-green-800',
+					className: 'bg-green-500 text-white select-none cursor-not-allowed',
 				};
 			case 'declined':
 				return {
@@ -147,7 +153,7 @@ export default function DrawList() {
 							<div className='p-6'>
 								<div className='flex justify-between items-start mb-4'>
 									<h3 className='text-xl font-semibold'>{draw.title}</h3>
-									<span className='px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800'>
+									<span className='px-2 py-1 text-xs font-semibold rounded-full select-none bg-green-100 text-green-800'>
 										Active
 									</span>
 								</div>

@@ -1,5 +1,4 @@
 const { User, Draw, Ticket } = require("../models");
-const { v4: uuidv4 } = require("uuid");
 const activityTracker = require('../utils/activityTracker');
 
 exports.getMyTickets = async (req, res) => {

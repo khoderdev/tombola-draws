@@ -1,12 +1,12 @@
 const express = require('express');
 const { body } = require('express-validator');
 const drawController = require('../controllers/draw.controller');
-const { protect, authorize } = require('../middleware/auth');
+const { protect, authorize, optionalAuth } = require('../middleware/auth');
 
 const router = express.Router();
 
-// Public routes
-router.get('/', drawController.getDraws);
+// Public routes with optional authentication
+router.get('/', optionalAuth, drawController.getDraws);
 router.get('/:id', drawController.getDraw);
 
 // Protected routes (require authentication)
