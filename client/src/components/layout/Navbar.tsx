@@ -121,7 +121,7 @@ export default function Navbar() {
           {/* Right Side: Links, Avatar, Dark Mode Toggle, and Menu Button */}
           <div className="flex items-center space-x-2 sm:space-x-4">
             {/* Draws Link */}
-            <Link className="btn" to="/draws">Draws</Link>
+            <Link className="btn !hidden sm:!block" to="/draws">Draws</Link>
             {/* Avatar Dropdown */}
             {user ? (
               <div className="relative" ref={dropdownRef}>
