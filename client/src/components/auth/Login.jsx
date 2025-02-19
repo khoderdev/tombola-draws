@@ -4,8 +4,8 @@ import { useAuth } from '../../context/AuthContext';
 
 export default function Login() {
 	const [formData, setFormData] = useState({
-		email: '',
-		password: '',
+		email: 'admin@tombola.com',
+		password: 'admin123',
 	});
 	const [error, setError] = useState('');
 	const [loading, setLoading] = useState(false);
