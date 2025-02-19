@@ -224,27 +224,3 @@ export function RequireAuth({
 
   return children;
 }
-// export function RequireAuth({
-//   children,
-//   allowedRoles = [],
-// }: {
-//   children: React.ReactNode;
-//   allowedRoles?: string[];
-// }) {
-//   const { user, loading } = useAuth();
-//   const location = useLocation();
-
-//   if (loading) {
-//     return <div>Loading...</div>;
-//   }
-
-//   if (!user) {
-//     return <Navigate to="/login" state={{ from: location }} replace />;
-//   }
-
-//   if (allowedRoles.length > 0 && user.role && !allowedRoles.includes(user.role)) {
-//     return <Navigate to="/unauthorized" replace />;
-//   }
-
-//   return children;
-// }

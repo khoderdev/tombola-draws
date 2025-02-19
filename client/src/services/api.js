@@ -152,8 +152,17 @@ export const profileService = {
 // Admin service
 export const adminService = {
   getStats: async () => {
-    const response = await api.get("/admin/stats");
-    return response.data;
+    try {
+      const response = await api.get("/admin/stats");
+      console.log("Raw stats response:", response);
+      if (response?.data?.status === "success" && response?.data?.data) {
+        return { status: "success", data: response.data.data };
+      }
+      throw new Error("Invalid response from server");
+    } catch (error) {
+      console.error("Error fetching admin stats:", error);
+      throw error;
+    }
   },
 
   getUsers: async () => {

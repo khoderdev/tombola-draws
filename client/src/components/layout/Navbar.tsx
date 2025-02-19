@@ -1,9 +1,15 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import { AnimatePresence, motion, useScroll, useMotionValueEvent } from "framer-motion";
+import {
+  AnimatePresence,
+  motion,
+  useScroll,
+  useMotionValueEvent,
+} from "framer-motion";
 import DarkLightSwitch from "./ThemeToggle";
 import Menu from "./Menu";
 import { useAuth, User } from "../../context/AuthContext";
+import Button from "../Button";
 
 export default function Navbar() {
   const { user, logout } = useAuth() as unknown as {
@@ -23,7 +29,7 @@ export default function Navbar() {
   useMotionValueEvent(scrollY, "change", (latest) => {
     const now = Date.now();
     if (now - lastScrollTime.current < THROTTLE_TIME) return;
-    
+
     const scrollDifference = latest - lastScrollY.current;
     const isScrollingDown = scrollDifference > 0;
     const isScrollingUp = scrollDifference < 0;
@@ -46,26 +52,27 @@ export default function Navbar() {
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const navVariants = {
-    visible: { 
+    visible: {
       y: 0,
       opacity: 1,
-      boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
-      transition: { 
+      boxShadow:
+        "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
+      transition: {
         duration: 0.3,
         ease: [0.4, 0, 0.2, 1],
-        opacity: { duration: 0.2 }
-      }
+        opacity: { duration: 0.2 },
+      },
     },
-    hidden: { 
+    hidden: {
       y: "-100%",
       opacity: 0,
       boxShadow: "none",
-      transition: { 
+      transition: {
         duration: 0.3,
         ease: [0.4, 0, 0.2, 1],
-        opacity: { duration: 0.2 }
-      }
-    }
+        opacity: { duration: 0.2 },
+      },
+    },
   };
 
   const handleAvatarClick = () => {
@@ -97,17 +104,16 @@ export default function Navbar() {
       variants={navVariants}
       animate={hidden ? "hidden" : "visible"}
       initial="visible"
-      className={`fixed top-0 left-0 right-0 z-40 transition-colors duration-200 ${
-        isAtTop 
-          ? "bg-transparent" 
+      className={`fixed top-0 left-0 right-0 z-40 transition-colors duration-200 ${isAtTop
+          ? "bg-transparent"
           : "bg-neutral-100/85 dark:bg-neutral-900/85 backdrop-blur-md"
-      }`}
+        }`}
     >
       <div className=" px-4 sm:px-6 lg:px-8 shadow dark:shadow-neutral-800 sticky top-0 z-40 w-full">
         <div className="flex max-w-7xl items-center justify-between h-16 mx-auto">
           {/* Logo */}
           <div className="flex items-center">
-            <Link to="/" className="font-bold text-4xl">
+            <Link to="/" className="font-extrabold text-4xl">
               Tombola
             </Link>
           </div>
@@ -115,13 +121,7 @@ export default function Navbar() {
           {/* Right Side: Links, Avatar, Dark Mode Toggle, and Menu Button */}
           <div className="flex items-center space-x-2 sm:space-x-4">
             {/* Draws Link */}
-            <Link
-              to="/draws"
-              className="bg-red-500 hover:bg-red-600 px-2 py-1 rounded-md"
-            >
-              Draws
-            </Link>
-
+            <Link className="btn" to="/draws">Draws</Link>
             {/* Avatar Dropdown */}
             {user ? (
               <div className="relative" ref={dropdownRef}>

@@ -126,7 +126,7 @@ export default function AdminUsers() {
                         <div className="flex-shrink-0 h-10 w-10">
                           <img
                             className="h-10 w-10 rounded-full"
-                            src={user.avatar || 'https://via.placeholder.com/40'}
+                            src={user.avatar || 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y'}
                             alt=""
                           />
                         </div>
